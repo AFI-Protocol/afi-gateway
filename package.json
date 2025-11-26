@@ -1,0 +1,31 @@
+{
+  "name": "@afi/eliza-gateway",
+  "version": "0.1.0",
+  "description": "AFI ↔ Eliza gateway: Phoenix/Eliza character configs, AFI-specific plugins, and HTTP/WS client code",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "node --watch src/index.ts",
+    "build": "tsc",
+    "test": "echo 'TODO: Add tests' && exit 0",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "afi",
+    "eliza",
+    "gateway",
+    "phoenix",
+    "agentic-intelligence"
+  ],
+  "author": "AFI Protocol",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+  },
+  "//": "TODO: Add ElizaOS SDK and AFI client dependencies when ready"
+}
+
