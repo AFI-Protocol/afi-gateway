@@ -107,6 +107,23 @@ npm run typecheck
 
 # Run tests
 npm test
+
+### AFIScout Smoke Test
+
+AFIScout is an ElizaOS character that turns natural-language trade ideas into AFI-ready **draft** signal payloads (no PoI/PoInsight/UWR/Novelty/emissions/tokenomics). The smoke script runs locally with an in-memory runtime (no DB, no backends) and logs a single draft JSON.
+
+```bash
+npm run afiscout:smoke
+```
+
+What it does:
+- Creates a minimal AgentRuntime with AFIScout only.
+- Feeds a sample trade idea to AFIScout.
+- Invokes the `emitAfiSignalDraft` action once and logs the resulting `AfiScoutSignalDraft` to stdout.
+
+Boundaries:
+- Local demo/debug only; it does NOT send anything to AFI or any external service.
+- Draft-only outbox; no validation, scoring, tokenomics, or vault writes.
 ```
 
 ---
@@ -187,4 +204,3 @@ All changes must follow the AFI Droid Charter:
 ## License
 
 MIT
-
