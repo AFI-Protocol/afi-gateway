@@ -21,6 +21,8 @@
 
 import { AgentRuntime, elizaLogger } from "@elizaos/core";
 import { phoenixCharacter } from "./phoenix.character.js";
+import { afiTelemetryPlugin } from "../plugins/afi-telemetry/index.js";
+import { afiScoutCharacter } from "./afiscout/index.js";
 
 /**
  * Main entrypoint for AFI Eliza Gateway
@@ -56,16 +58,25 @@ async function main() {
       );
     }
 
-    // Initialize AgentRuntime with Phoenix character
+    // Initialize AgentRuntime with Phoenix character by default
     elizaLogger.info("🔧 Initializing AgentRuntime...");
     const runtime = new AgentRuntime({
       character: phoenixCharacter,
       adapter: undefined, // TODO: Add database adapter when needed (e.g., SQLite, PostgreSQL)
     });
 
-    // TODO: Register plugins when available:
+    // Register AFI Telemetry Plugin
+    elizaLogger.info("🔌 Registering AFI Telemetry Plugin...");
+    await runtime.registerPlugin(afiTelemetryPlugin);
+    elizaLogger.info(
+      "✅ AFI Telemetry Plugin registered (offline mode: mock data only)"
+    );
+
+    // Optional: register AFIScout character as an alternate profile
+    elizaLogger.info(`🔌 AFIScout character available: ${afiScoutCharacter.name}`);
+
+    // TODO: Register additional plugins when available:
     // - @elizaos/plugin-node (Node.js services: browser, PDF, speech, etc.)
-    // - @afi/plugin-afi-telemetry (safe AFI data access)
     // - @afi/plugin-afi-skills (skill invocation via AFI APIs)
 
     elizaLogger.success("✅ AgentRuntime initialized successfully");
@@ -99,4 +110,3 @@ main().catch((error) => {
   elizaLogger.error("❌ Unhandled error in main():", String(error));
   process.exit(1);
 });
-

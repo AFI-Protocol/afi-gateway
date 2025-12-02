@@ -132,7 +132,13 @@ npm run build
 
 **Ambiguous**: When in doubt, prefer calling an AFI service or asking for human review rather than duplicating logic. If you need new AFI functionality, propose it in afi-reactor or afi-core, not here.
 
+## AFIScout Scope (Eliza Gateway)
+
+- AFIScout is an Eliza character plus a minimal plugin (`afi-signal-outbox`) that emits AFI-ready signal drafts.
+- Allowed paths: `src/afiscout/**`, `docs/AFISCOUT_OVERVIEW.md`.
+- Must NOT modify token contracts, emissions logic, or AFI backend repos; no direct DB access.
+- AFIScout only prepares drafts; AFI validators/backends handle PoI, PoInsight, UWR, novelty, and replay.
+
 ---
 
 **Last Updated**: 2025-11-26 | **Maintainers**: AFI Gateway Team | **Charter**: `../afi-config/codex/governance/droids/AFI_DROID_CHARTER.v0.1.md`
-

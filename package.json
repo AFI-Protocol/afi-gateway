@@ -10,7 +10,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "echo 'TODO: Add tests' && exit 0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "telemetry:offline": "tsx scripts/offline-telemetry-smoke.ts"
   },
   "keywords": [
     "afi",
@@ -24,12 +25,16 @@
   "devDependencies": {
     "@types/node": "^20.0.0",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.0"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@elizaos/core": "latest",
-    "@elizaos/plugin-bootstrap": "latest",
-    "@elizaos/plugin-node": "latest"
+    "@elizaos/core": "1.6.4",
+    "@elizaos/plugin-bootstrap": "1.6.4",
+    "@elizaos/plugin-node": "1.0.0-alpha.25"
+  },
+  "overrides": {
+    "@elizaos/plugin-node": {
+      "@elizaos/core": "1.6.4"
+    }
   }
 }
-
