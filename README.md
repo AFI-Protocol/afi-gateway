@@ -107,6 +107,42 @@ npm run typecheck
 
 # Run tests
 npm test
+```
+
+---
+
+## Prize Pipeline Demo — "Pipeline with Friends"
+
+**Status**: Ready for ElizaOS team demo
+**Purpose**: Demonstrate AFI's signal processing pipeline using Phoenix, Alpha, and Val Dook personas
+
+See **[PRIZE_DEMO.md](./PRIZE_DEMO.md)** for the full demo script.
+
+### Quick Start
+
+1. **Start AFI Reactor** (backend):
+   ```bash
+   cd /Users/secretservice/AFI_Modular_Repos/afi-reactor
+   npm run dev
+   # Should start on http://localhost:8080
+   ```
+
+2. **Start AFI Eliza Gateway** (agent runtime):
+   ```bash
+   cd /Users/secretservice/AFI_Modular_Repos/afi-eliza-gateway
+   npm run dev
+   # Starts ElizaOS runtime with Phoenix, Alpha, and Val Dook characters
+   ```
+
+3. **Run the demo** (via Phoenix):
+   - **User**: "Phoenix, run the prize demo"
+   - **Phoenix**: [calls `RUN_PRIZE_DEMO` action and presents narrative summary]
+
+The demo runs a pre-configured BTC trend-pullback signal through the 6-stage Froggy pipeline and shows how Phoenix (narrator), Alpha (scout), and Val Dook (validator) work together.
+
+**DEMO-ONLY**: No real trading, no AFI minting, simulated execution only.
+
+---
 
 ### AFIScout Smoke Test
 
