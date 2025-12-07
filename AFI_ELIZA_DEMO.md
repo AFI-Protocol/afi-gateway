@@ -1,7 +1,7 @@
-# AFI Prize Pipeline Demo — "Pipeline with Friends"
+# AFI Eliza Demo — "Pipeline with Friends"
 
 **Status**: Ready for ElizaOS team demo
-**Date**: 2025-12-06
+**Date**: 2025-12-07
 **Purpose**: Demonstrate AFI's signal processing pipeline using Phoenix, Alpha, Pixel Rick, Froggy, and Val Dook personas
 
 ⚠️ **DEV/DEMO ONLY** - No real trading, no AFI minting, simulated execution only.
@@ -142,21 +142,21 @@ For this demo, we'll assume **Discord** or **CLI**.
 >
 > **Example**: A contributor builds a 'Liquidity Sweep Detector' enrichment lego. Validators enable it in their enrichment profile. When signals using this lego get approved, the contributor earns a share of AFI emissions.
 >
-> **Current Status** (Prize Demo):
+> **Current Status** (AFI Eliza Demo):
 > - ✅ Technical + Pattern legos are live in the Froggy pipeline
 > - 🚧 Sentiment, News, AI/ML legos are in development
 > - 🚧 Enrichment marketplace (monetization layer) is planned"
 
 ---
 
-### **ACT 5: Phoenix Runs the Full Prize Demo** (2 minutes)
+### **ACT 5: Phoenix Runs the Full AFI Eliza Demo** (2 minutes)
 
-**User**: "Phoenix, run the prize demo."
+**User**: "Phoenix, run the AFI Eliza demo."
 
-**Phoenix** (calls `RUN_PRIZE_DEMO`):
-> "Running the AFI Prize Pipeline demo with stage-by-stage summaries...
+**Phoenix** (calls `RUN_AFI_ELIZA_DEMO`):
+> "Running the AFI Eliza Demo with stage-by-stage summaries...
 >
-> 🏆 **AFI Prize Pipeline Demo Complete**
+> 🏆 **AFI Eliza Demo Complete**
 >
 > **Signal**: BTC/USDT 1h long
 > **Strategy**: froggy_trend_pullback_v1
@@ -244,7 +244,7 @@ For this demo, we'll assume **Discord** or **CLI**.
 
 | **Persona** | **Role** | **Action** | **Narrative Voice** |
 |-------------|----------|------------|---------------------|
-| **Phoenix** | Host/Narrator | `CHECK_AFI_REACTOR_HEALTH`, `RUN_PRIZE_DEMO`, `EXPLAIN_LAST_FROGGY_DECISION` | Warm, educational, context-provider |
+| **Phoenix** | Host/Narrator | `CHECK_AFI_REACTOR_HEALTH`, `RUN_AFI_ELIZA_DEMO`, `EXPLAIN_LAST_FROGGY_DECISION` | Warm, educational, context-provider |
 | **Alpha** | Scout | `SUBMIT_FROGGY_DRAFT` | Brief, technical, setup-focused |
 | **Pixel Rick** | Enrichment Architect | `DESCRIBE_ENRICHMENT_LAYERS` | Sarcastic, sharp, technical, helpful |
 | **Froggy** | Analyst | (runs in pipeline, no direct action) | Analytical, strategy-focused |

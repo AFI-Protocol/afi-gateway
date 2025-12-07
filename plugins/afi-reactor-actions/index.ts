@@ -197,36 +197,38 @@ const explainLastFroggyDecisionAction: Action = {
 };
 
 /**
- * RUN_PRIZE_DEMO Action
+ * RUN_AFI_ELIZA_DEMO Action
  *
- * DEMO-ONLY: Prize pipeline sample – safe to show in ElizaOS demo
+ * DEMO-ONLY: AFI Eliza Demo – safe to show in ElizaOS demo
  *
  * Runs a pre-configured BTC trend-pullback signal through the Froggy pipeline
  * and returns a narrative summary suitable for Phoenix to present.
  *
- * This is a convenience action for the "Pipeline with Friends" demo.
+ * This is a convenience action for the AFI Eliza Demo.
  */
-export const runPrizeDemoAction: Action = {
-  name: "RUN_PRIZE_DEMO",
+export const runAfiElizaDemoAction: Action = {
+  name: "RUN_AFI_ELIZA_DEMO",
   description:
-    "Run a pre-configured prize demo signal through the Froggy pipeline. Returns a narrative summary for Phoenix to present. DEMO-ONLY.",
+    "Run a pre-configured AFI Eliza Demo signal through the Froggy pipeline. Returns a narrative summary for Phoenix to present. DEMO-ONLY.",
   similes: [
-    "run prize demo",
-    "show prize pipeline",
+    "run afi eliza demo",
+    "run afi demo",
+    "show afi pipeline",
     "demo the pipeline",
     "run pipeline demo",
+    "run eliza demo",
   ],
   examples: [
     [
       {
         user: "{{user1}}",
-        content: { text: "Run the prize demo" },
+        content: { text: "Run the AFI Eliza demo" },
       },
       {
         user: "{{agentName}}",
         content: {
-          text: "Running the AFI Prize Pipeline demo...",
-          action: "RUN_PRIZE_DEMO",
+          text: "Running the AFI Eliza Demo...",
+          action: "RUN_AFI_ELIZA_DEMO",
         },
       },
     ],
@@ -240,11 +242,11 @@ export const runPrizeDemoAction: Action = {
     callback?: any
   ) => {
     try {
-      runtime.logger.info("🏆 Running Prize Demo via /demo/prize-froggy endpoint...");
+      runtime.logger.info("🎯 Running AFI Eliza Demo via /demo/afi-eliza-demo endpoint...");
 
-      // Call the Prize Demo endpoint (includes stage summaries)
+      // Call the AFI Eliza Demo endpoint (includes stage summaries)
       const baseUrl = getAfiReactorBaseUrl();
-      const endpoint = `${baseUrl}/demo/prize-froggy`;
+      const endpoint = `${baseUrl}/demo/afi-eliza-demo`;
 
       const response = await fetch(endpoint, {
         method: "POST",
@@ -254,7 +256,7 @@ export const runPrizeDemoAction: Action = {
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(
-          `AFI Reactor Prize Demo returned ${response.status}: ${errorText}`
+          `AFI Reactor Eliza Demo returned ${response.status}: ${errorText}`
         );
       }
 
@@ -280,7 +282,7 @@ export const runPrizeDemoAction: Action = {
         : "Stage summaries not available";
 
       const narrative = `
-🏆 **AFI Prize Pipeline Demo Complete**
+🎯 **AFI Eliza Demo Complete**
 
 **Signal**: ${result.meta.symbol} ${result.meta.timeframe} ${result.meta.direction}
 **Strategy**: ${result.meta.strategy}
@@ -313,7 +315,7 @@ ${stageNarrative}
       if (callback) {
         callback({
           text: narrative,
-          action: "RUN_PRIZE_DEMO",
+          action: "RUN_AFI_ELIZA_DEMO",
         });
       }
 
@@ -323,7 +325,7 @@ ${stageNarrative}
         result,
       };
     } catch (error) {
-      runtime.logger.error("Prize demo failed:", error);
+      runtime.logger.error("AFI Eliza demo failed:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -429,7 +431,7 @@ Enrichment legos are modular data feeds that enrich raw signals with context bef
 
 ---
 
-**Current Status** (Prize Demo):
+**Current Status** (AFI Eliza Demo):
 - ✅ Technical + Pattern legos are live in the Froggy pipeline
 - 🚧 Sentiment, News, AI/ML legos are in development
 - 🚧 Enrichment marketplace (monetization layer) is planned
@@ -484,7 +486,7 @@ export const afiReactorActionsPlugin: Plugin = {
     submitFroggyDraftAction,
     checkAfiReactorHealthAction,
     explainLastFroggyDecisionAction,
-    runPrizeDemoAction, // DEMO-ONLY: Prize pipeline sample
+    runAfiElizaDemoAction, // DEMO-ONLY: AFI Eliza Demo
     describeEnrichmentLayersAction, // Pixel Rick's enrichment legos explainer
   ],
 

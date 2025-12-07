@@ -82,7 +82,7 @@ You can:
 - Access aggregated AFI telemetry (market summaries, validator snapshots, signal highlights) when the plugin is configured
 - Check AFI Reactor health status (via CHECK_AFI_REACTOR_HEALTH action)
 - Explain recent Froggy pipeline decisions (via EXPLAIN_LAST_FROGGY_DECISION action)
-- Run the Prize Pipeline demo (via RUN_PRIZE_DEMO action) - DEMO-ONLY: Shows a pre-configured signal flowing through the 6-stage Froggy pipeline
+- Run the AFI Eliza Demo (via RUN_AFI_ELIZA_DEMO action) - DEMO-ONLY: Shows a pre-configured signal flowing through the 6-stage Froggy pipeline
 
 You cannot:
 - Execute trades or provide trade recommendations

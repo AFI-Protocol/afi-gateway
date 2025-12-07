@@ -28,6 +28,8 @@ import { valDookCharacter } from "./valDook.character.js";
 import { afiTelemetryPlugin } from "../plugins/afi-telemetry/index.js";
 import { afiReactorActionsPlugin } from "../plugins/afi-reactor-actions/index.js";
 import { afiScoutCharacter } from "./afiscout/index.js";
+import { handleAfiCliCommand } from "./afiCli.js";
+import * as readline from "readline";
 
 /**
  * Main entrypoint for AFI Eliza Gateway
@@ -108,10 +110,50 @@ async function main() {
     elizaLogger.info("🎯 AFI Eliza Gateway is running");
     elizaLogger.info("📚 Phoenix is ready to explain AFI Protocol");
 
+    // Start simple CLI interface
+    elizaLogger.info("💬 Starting AFI CLI interface...");
+    elizaLogger.info("   Type '/afi help' for AFI commands");
+    elizaLogger.info("   Type 'exit' to quit");
+    elizaLogger.info("");
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      prompt: "AFI> ",
+    });
+
+    rl.prompt();
+
+    rl.on("line", async (line: string) => {
+      const trimmed = line.trim();
+
+      if (trimmed === "exit" || trimmed === "quit") {
+        elizaLogger.info("👋 Goodbye!");
+        rl.close();
+        process.exit(0);
+      }
+
+      // Check if this is an AFI command
+      if (trimmed.startsWith("/afi ") || trimmed.startsWith("afi ")) {
+        const afiInput = trimmed.replace(/^\/?(afi\s+)/, "");
+        try {
+          const response = await handleAfiCliCommand(afiInput, runtime);
+          console.log("\n" + response + "\n");
+        } catch (error) {
+          console.error(`\n❌ Error: ${error instanceof Error ? error.message : String(error)}\n`);
+        }
+      } else if (trimmed) {
+        // For non-AFI commands, show a helpful message
+        console.log("\n💡 This is the AFI CLI. Use '/afi help' for available commands.\n");
+      }
+
+      rl.prompt();
+    });
+
     // Keep the process alive
     process.on("SIGINT", async () => {
       elizaLogger.info("🛑 Shutting down AFI Eliza Gateway...");
-      // TODO: Cleanup runtime, close connections
+      rl.close();
       process.exit(0);
     });
 
