@@ -75,11 +75,17 @@ npm install
 
 ### Configuration
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory (copy from `.env.example`):
 
 ```bash
 # Required: OpenAI API key for LLM
 OPENAI_API_KEY=sk-...
+
+# Required: MongoDB connection string (for gateway-specific data)
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority
+
+# Optional: Override default database name (defaults to "afi_eliza")
+AFI_MONGO_DB_NAME=afi_eliza
 
 # Optional: Discord bot credentials (for Discord client)
 # DISCORD_APPLICATION_ID=your_discord_app_id
@@ -107,6 +113,93 @@ npm run typecheck
 
 # Run tests
 npm test
+```
+
+---
+
+## MongoDB (AFI Eliza Gateway)
+
+### Scope
+
+This repository uses MongoDB for **gateway-specific data only**:
+
+- ✅ Chat/session history for Phoenix & friends
+- ✅ Local/demo data (e.g., healthcheck collection)
+- ✅ Future gateway-specific metadata
+
+**IMPORTANT**: This is **NOT** for TSSD vault data. The canonical TSSD vault lives in other AFI repos (`afi-reactor`, `afi-infra`) and uses separate database and collection names.
+
+### Database & Collections
+
+- **Database**: `afi_eliza` (default, can be overridden via `AFI_MONGO_DB_NAME`)
+- **Collections**: `sessions`, `messages`, `demo_health`, etc.
+
+### Setup
+
+1. **Get MongoDB Atlas connection string**:
+   - Create a free cluster at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
+   - Create a database user with read/write permissions
+   - Whitelist your IP address (or use `0.0.0.0/0` for development)
+   - Copy the connection string
+
+2. **Configure environment**:
+   ```bash
+   cp .env.example .env
+   # Edit .env and set MONGODB_URI to your Atlas connection string
+   ```
+
+3. **Test the connection**:
+   ```bash
+   npm install
+   npm run test:mongo
+   ```
+
+   Expected output:
+   ```
+   🔍 AFI Eliza Gateway — MongoDB Smoke Test
+   ============================================================
+   [1/4] Connecting to MongoDB...
+   ✅ Connected to database: afi_eliza
+   [2/4] Accessing collection: demo_health
+   ✅ Collection ready
+   [3/4] Inserting test document...
+   ✅ Document inserted with _id: 507f1f77bcf86cd799439011
+   [4/4] Reading document back...
+   ✅ Document retrieved successfully
+   ============================================================
+   📊 SMOKE TEST RESULTS:
+   ============================================================
+   Database:     afi_eliza
+   Collection:   demo_health
+   Document ID:  507f1f77bcf86cd799439011
+   Created At:   2024-01-15T10:30:00.000Z
+   Note:         AFI Eliza gateway Mongo smoke test
+   Version:      0.1.0
+   ============================================================
+   ✅ SMOKE TEST PASSED
+   ```
+
+### Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `MONGODB_URI` | Yes | - | MongoDB Atlas connection string |
+| `AFI_MONGO_DB_NAME` | No | `afi_eliza` | Database name for gateway data |
+
+### Usage in Code
+
+```typescript
+import { getDb, closeMongoConnection } from "./lib/db/mongo.js";
+
+// Get database instance
+const db = await getDb();
+
+// Use a collection
+const sessions = db.collection("sessions");
+await sessions.insertOne({ userId: "123", createdAt: new Date() });
+
+// Graceful shutdown
+await closeMongoConnection();
 ```
 
 ---
