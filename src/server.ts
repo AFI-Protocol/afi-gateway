@@ -82,6 +82,32 @@ app.get("/healthz", (req: Request, res: Response) => {
 });
 
 /**
+ * GET /
+ *
+ * Root endpoint - provides service information and available routes.
+ *
+ * Returns:
+ * - 200 OK with service info and route list
+ */
+app.get("/", (req: Request, res: Response) => {
+  const response = {
+    service: "afi-eliza-gateway",
+    version: packageVersion,
+    description: "AFI Eliza Gateway - HTTP API for AFI-Eliza integration",
+    environment: process.env.NODE_ENV || "development",
+    timestamp: new Date().toISOString(),
+    routes: [
+      { method: "GET", path: "/", description: "Service information" },
+      { method: "GET", path: "/healthz", description: "Health check" },
+      { method: "GET", path: "/demo/ping", description: "Ping endpoint" },
+    ],
+  };
+
+  elizaLogger.debug("Root endpoint requested", response);
+  res.status(200).json(response);
+});
+
+/**
  * GET /demo/ping
  *
  * Simple ping endpoint to verify the server is alive.
@@ -109,6 +135,7 @@ app.use((req: Request, res: Response) => {
     error: "not_found",
     message: `Route ${req.method} ${req.path} not found`,
     availableRoutes: [
+      "GET /",
       "GET /healthz",
       "GET /demo/ping",
     ],
@@ -133,6 +160,7 @@ async function startServer() {
       elizaLogger.info(`   Version: ${packageVersion}`);
       elizaLogger.info("");
       elizaLogger.info("   Available Routes:");
+      elizaLogger.info("     GET  /              — Service info");
       elizaLogger.info("     GET  /healthz       — Health check");
       elizaLogger.info("     GET  /demo/ping     — Ping endpoint");
       elizaLogger.info("");
