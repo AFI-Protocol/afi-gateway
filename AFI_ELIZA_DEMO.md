@@ -1,10 +1,15 @@
 # AFI Eliza Demo — "Pipeline with Friends"
 
 **Status**: Ready for ElizaOS team demo
-**Date**: 2025-12-07
+**Date**: 2025-12-08 (updated)
 **Purpose**: Demonstrate AFI's signal processing pipeline using Phoenix, Alpha, Pixel Rick, Froggy, and Val Dook personas
+**Client**: ElizaOS web client (official UI)
 
 ⚠️ **DEV/DEMO ONLY** - No real trading, no AFI minting, simulated execution only.
+
+📚 **See Also**:
+- `docs/ELIZA_WEB_CLIENT_DEMO_RUNBOOK.md` — Step-by-step setup guide
+- `docs/ELIZA_DEMO_STATUS.md` — Current status and remaining tasks
 
 ---
 
@@ -70,12 +75,19 @@ WEBHOOK_SHARED_SECRET=demo-secret-123  # Optional, for webhook auth
 
 ### 3. Client Interface
 
-Choose one:
-- **Discord bot** (if configured)
-- **CLI** (ElizaOS terminal client)
-- **Web chat** (if available)
+**For ElizaOS Live Demo**: Use **ElizaOS web client** (official UI)
 
-For this demo, we'll assume **Discord** or **CLI**.
+**For Local Testing**: Use **AFI CLI** (built-in)
+```bash
+npm run dev
+# Type '/afi help' for commands
+```
+
+**Alternative Clients** (optional):
+- Discord bot (requires `DISCORD_APPLICATION_ID` and `DISCORD_API_TOKEN`)
+- ElizaOS CLI (terminal-based)
+
+**Note**: This demo is designed for ElizaOS's web client. See `docs/ELIZA_WEB_CLIENT_DEMO_RUNBOOK.md` for setup instructions.
 
 ---
 

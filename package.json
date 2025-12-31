@@ -8,8 +8,12 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "dev:server": "tsx src/server.ts",
+    "dev:server-full": "tsx src/server-full.ts",
+    "dev:discord": "tsx src/community/discord-server.ts",
+    "dev:telegram": "tsx src/community/telegram-server.ts",
     "build": "tsc",
-    "start": "node dist/src/server.js",
+    "start": "node dist/src/server-full.js",
+    "start:minimal": "node dist/src/server.js",
     "start:cli": "node dist/src/index.js",
     "test": "npm run test:afi-reactor-actions",
     "test:afi-reactor-actions": "tsx scripts/afi-reactor-actions-smoke.ts",
@@ -34,11 +38,17 @@
   "dependencies": {
     "@elizaos/core": "1.6.4",
     "@elizaos/plugin-bootstrap": "1.6.4",
+    "@elizaos/plugin-discord": "1.6.4",
+    "@elizaos/plugin-knowledge": "1.6.4",
     "@elizaos/plugin-node": "1.0.0-alpha.25",
+    "@elizaos/plugin-telegram": "1.6.4",
+    "@elizaos/server": "1.6.4",
     "@types/express": "^4.17.21",
     "@types/node": "^20.0.0",
+    "dotenv": "^16.4.7",
     "express": "^4.18.2",
     "mongodb": "^6.21.0",
+    "openai": "^4.77.3",
     "typescript": "^5.9.2"
   },
   "overrides": {

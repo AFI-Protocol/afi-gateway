@@ -37,29 +37,46 @@ export interface TradingViewLikeDraft {
 }
 
 /**
- * Froggy pipeline result.
- * This is the shape returned by the Froggy pipeline after full processing.
- * Matches the FroggyPipelineResult interface from afi-reactor.
+ * Reactor Scored Signal V1 (Response Contract)
+ *
+ * This is what Reactor returns from ingestion endpoints.
+ * Reactor's responsibility: ingest → enrich → score → persist.
+ *
+ * NOT Reactor's responsibility:
+ * - Validator certification (moved to external certification layer)
+ * - Execution (moved to consumer/adapter layer)
+ * - Minting/emissions (moved to afi-mint)
  */
-export interface FroggyPipelineResult {
+export interface ReactorScoredSignalV1 {
   signalId: string;
-  validatorDecision: {
-    decision: string;
-    uwrConfidence?: number;
-    reasonCodes?: string[];
+  rawUss: any;
+  lenses?: any[];
+  _priceFeedMetadata?: {
+    source: string;
+    timestamp: string;
     [key: string]: any;
-  } | null;
-  execution: {
-    status: string;
-    type?: string;
-    asset?: string;
-    amount?: number;
-    simulatedPrice?: number;
-    timestamp?: string;
+  };
+  analystScore: {
+    uwrScore: number;
+    uwrAxes: {
+      utility: number;
+      workQuality: number;
+      rarity: number;
+    };
     [key: string]: any;
+  };
+  scoredAt: string;
+  decayParams: {
+    halfLifeMinutes: number;
+    greeksTemplateId: string;
   } | null;
-  meta?: Record<string, any>;
-  [key: string]: any;
+  meta: {
+    symbol: string;
+    timeframe: string;
+    strategy: string;
+    direction: string;
+    source: string;
+  };
 }
 
 /**
@@ -80,25 +97,26 @@ export function getAfiReactorBaseUrl(): string {
 }
 
 /**
- * Run Froggy trend_pullback_v1 pipeline on a signal draft.
+ * Run Froggy trend_pullback_v1 scoring pipeline on a signal draft.
  *
  * This sends the draft to afi-reactor's Froggy pipeline endpoint,
  * which processes it through:
- * 1. Alpha Scout Ingest
- * 2. Signal Structurer (Pixel Rick)
- * 3. Froggy Enrichment Adapter
- * 4. Froggy Analyst (trend_pullback_v1)
- * 5. Validator Decision Evaluator (Val Dook)
- * 6. Execution Agent Sim
+ * 1. Ingest → USS normalization
+ * 2. Enrichment (technical, pattern, sentiment, news, optional AI/ML)
+ * 3. Analyst scoring (trend_pullback_v1)
+ * 4. Vault persistence
+ *
+ * Returns ReactorScoredSignalV1 (scored signal only).
+ * Validator certification and execution are NOT Reactor's responsibility.
  *
  * @param draft - TradingView-like signal draft
- * @returns Froggy pipeline result with validator decision and execution status
+ * @returns Reactor scored signal with analystScore, scoredAt, decayParams
  *
  * @throws Error if the request fails or returns non-2xx status
  */
 export async function runFroggyTrendPullback(
   draft: TradingViewLikeDraft
-): Promise<FroggyPipelineResult> {
+): Promise<ReactorScoredSignalV1> {
   const baseUrl = getAfiReactorBaseUrl();
   const endpoint = `${baseUrl}/api/webhooks/tradingview`;
 
@@ -127,7 +145,7 @@ export async function runFroggyTrendPullback(
     }
 
     const result = await response.json();
-    return result as FroggyPipelineResult;
+    return result as ReactorScoredSignalV1;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Failed to run Froggy pipeline: ${error.message}`);

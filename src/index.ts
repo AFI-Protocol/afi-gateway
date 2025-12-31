@@ -19,6 +19,8 @@
  * - AFI services NEVER depend on this gateway
  */
 
+// IMPORTANT: Import env config FIRST to ensure environment is loaded and validated
+import { env } from "./config/env.js";
 import { AgentRuntime, elizaLogger } from "@elizaos/core";
 import { phoenixCharacter } from "./phoenix.character.js";
 import { alphaCharacter } from "./alpha.character.js";
@@ -52,18 +54,8 @@ async function main() {
     elizaLogger.info("🚀 Starting AFI Eliza Gateway...");
     elizaLogger.info(`📋 Loading Phoenix character: ${phoenixCharacter.name}`);
 
-    // Validate required environment variables
-    const requiredEnvVars = ["OPENAI_API_KEY"];
-    const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
-
-    if (missingEnvVars.length > 0) {
-      elizaLogger.warn(
-        `⚠️  Missing environment variables: ${missingEnvVars.join(", ")}`
-      );
-      elizaLogger.warn(
-        "⚠️  Some features may not work. See README.md for setup instructions."
-      );
-    }
+    // Environment is already validated by src/config/env.ts
+    // If we got here, OPENAI_API_KEY is valid and loaded
 
     // Initialize AgentRuntime with Phoenix character by default
     elizaLogger.info("🔧 Initializing AgentRuntime...");

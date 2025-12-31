@@ -21,7 +21,7 @@ import {
   checkAfiReactorHealth,
   getAfiReactorBaseUrl,
   type HealthCheckResponse,
-  type FroggyPipelineResult,
+  type ReactorScoredSignalV1,
 } from "./afiClient.js";
 
 /**
@@ -72,60 +72,28 @@ export async function handleAfiCliCommand(
 
 /**
  * Run the AFI Eliza Demo flow.
- * Calls the /demo/afi-eliza-demo endpoint and returns a narrative summary.
+ *
+ * DISABLED: The /demo/afi-eliza-demo endpoint has been removed from Reactor.
+ * Reactor is now scoring-only (no demo endpoints).
+ *
+ * Use the SUBMIT_FROGGY_DRAFT action instead to submit signals to the scoring pipeline.
  */
 async function runAfiElizaDemoFlow(runtime: IAgentRuntime): Promise<string> {
-  runtime.logger.info("[AFI CLI] Running AFI Eliza Demo...");
-
-  const baseUrl = getAfiReactorBaseUrl();
-  const endpoint = `${baseUrl}/demo/afi-eliza-demo`;
-
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`AFI Reactor returned ${response.status}: ${errorText}`);
-  }
-
-  const result: FroggyPipelineResult = await response.json();
-
-  // Build narrative summary
-  const stageNarrative = result.stageSummaries
-    ? result.stageSummaries
-        .map((stage: any, index: number) => {
-          let line = `${index + 1}. ✅ ${stage.persona} (${stage.stage}): ${stage.summary}`;
-          if (stage.enrichmentCategories) {
-            line += `\n   Enrichment: ${stage.enrichmentCategories.join(", ")}`;
-          }
-          if (stage.uwrScore !== undefined) {
-            line += `\n   UWR Score: ${stage.uwrScore.toFixed(2)}`;
-          }
-          if (stage.decision) {
-            line += `\n   Decision: ${stage.decision}`;
-          }
-          return line;
-        })
-        .join("\n\n")
-    : "Stage summaries not available";
+  runtime.logger.warn("[AFI CLI] eliza-demo command is disabled (endpoint removed from Reactor)");
 
   return `
-🎯 **AFI Eliza Demo Complete**
+⚠️ **AFI Eliza Demo Disabled**
 
-**Signal**: ${result.meta?.symbol || "N/A"} ${result.meta?.timeframe || ""} ${result.meta?.direction || ""}
-**Strategy**: ${result.meta?.strategy || "N/A"}
+The /demo/afi-eliza-demo endpoint has been removed from AFI Reactor.
 
-**Pipeline Flow**:
-${stageNarrative}
+Reactor is now a **scoring-only pipeline** (ingest → enrich → score → persist).
 
----
+To submit signals for scoring, use:
+- The SUBMIT_FROGGY_DRAFT action (via Alpha Scout)
+- The /api/webhooks/tradingview endpoint directly
+- The /api/ingest/cpj endpoint for CPJ signals
 
-**Final Decision**: ${result.validatorDecision?.decision || "N/A"} (confidence: ${result.validatorDecision?.uwrConfidence?.toFixed(2) || "N/A"})
-**Execution**: ${result.execution?.status || "N/A"} - ${result.execution?.type || "N/A"} ${result.execution?.amount || ""} ${result.execution?.asset || ""} @ ${result.execution?.simulatedPrice || "N/A"}
-
-⚠️ **DEMO ONLY**: No real trading. No AFI tokens minted.
+For more information, see the AFI Reactor documentation.
   `.trim();
 }
 

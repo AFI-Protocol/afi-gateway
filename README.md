@@ -78,42 +78,121 @@ npm install
 Create a `.env` file in the root directory (copy from `.env.example`):
 
 ```bash
-# Required: OpenAI API key for LLM
-OPENAI_API_KEY=sk-...
+cp .env.example .env
+```
 
-# Required: MongoDB connection string (for gateway-specific data)
+Then edit `.env` and add your OpenAI API key:
+
+```bash
+# REQUIRED: OpenAI API key for LLM
+# Get your key from: https://platform.openai.com/api-keys
+# This is the ONLY source of truth for the OpenAI API key
+# The key is validated at startup and only the last 4 characters are logged
+OPENAI_API_KEY=sk-your-actual-key-here
+
+# Optional: MongoDB connection string (for gateway-specific data)
 MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority
 
 # Optional: Override default database name (defaults to "afi_eliza")
 AFI_MONGO_DB_NAME=afi_eliza
 
+# Optional: AFI Reactor URL (defaults to http://localhost:8080)
+AFI_REACTOR_BASE_URL=http://localhost:8080
+
 # Optional: Discord bot credentials (for Discord client)
 # DISCORD_APPLICATION_ID=your_discord_app_id
 # DISCORD_API_TOKEN=your_discord_bot_token
-
-# Optional: AFI service URLs (for future AFI telemetry plugin)
-# AFI_REACTOR_URL=http://localhost:3001
-# AFI_CORE_URL=http://localhost:3002
 ```
+
+**Important**:
+- Never commit your `.env` file (it's in `.gitignore`)
+- The OpenAI API key must start with `sk-` and be at least 20 characters
+- At startup, you'll see a log showing the last 4 characters of your key for verification
 
 ### Running
 
+**Development Modes:**
+
 ```bash
-# Run in dev mode (with hot reload)
-npm run dev
+# CLI mode (interactive terminal with Phoenix)
+pnpm dev
+# Runs: tsx src/index.ts
+# Provides: AFI> CLI prompt for chatting with Phoenix
 
+# HTTP server mode (minimal Express server)
+pnpm dev:server
+# Runs: tsx src/server.ts
+# Provides: /healthz, /demo/ping endpoints on port 8080
+
+# Full ElizaOS server mode (recommended for web client)
+pnpm dev:server-full
+# Runs: tsx src/server-full.ts
+# Provides: Full ElizaOS API with all agents on port 8080
+# Endpoints: /, /health, /api/health, /api/agents, WebSocket
+```
+
+**Production:**
+
+```bash
 # Build TypeScript
-npm run build
+pnpm build
 
-# Run production build
-npm start
+# Run production build (full server)
+pnpm start
 
 # Type check
-npm run typecheck
+pnpm typecheck
 
 # Run tests
-npm test
+pnpm test
 ```
+
+**Which mode should I use?**
+- **Local development with CLI**: `pnpm dev` (talk to Phoenix in terminal)
+- **Testing HTTP endpoints**: `pnpm dev:server-full` (full ElizaOS API)
+- **Production deployment**: `pnpm build && pnpm start`
+
+---
+
+## HTTP Endpoints
+
+When running in **full server mode** (`pnpm dev:server-full`), the gateway provides these HTTP endpoints:
+
+### Web UI
+- **GET /** — ElizaOS Web UI (interactive chat interface)
+  ```bash
+  # Open in browser: http://localhost:8080/
+  ```
+
+### Health Checks
+- **GET /health** — ElizaOS health check with agent status
+  ```bash
+  curl http://localhost:8080/health
+  # Returns: {"status":"OK","version":"unknown","timestamp":"...","dependencies":{"agents":"healthy"},"agentCount":5}
+  ```
+
+### Agent API (ElizaOS Standard)
+- **GET /api/agents** — List all available agents (Phoenix, Alpha, Froggy, Pixel Rick, Val Dook)
+  ```bash
+  curl http://localhost:8080/api/agents
+  ```
+- **POST /api/agents/:id/message** — Send a message to a specific agent
+  ```bash
+  curl -X POST http://localhost:8080/api/agents/AGENT_ID/message \
+    -H "Content-Type: application/json" \
+    -d '{"text": "Hello Phoenix!", "userId": "user123"}'
+  ```
+- **GET /api/agents/:id/rooms** — List rooms for a specific agent
+  ```bash
+  curl http://localhost:8080/api/agents/AGENT_ID/rooms
+  ```
+
+### WebSocket
+- **ws://localhost:8080/** — Real-time chat via WebSocket (used by web UI)
+
+**Default Port:** 8080 (configurable via `PORT` environment variable)
+
+**Note:** The ElizaOS server provides a full web UI at the root path. For API-only access, use the `/api/*` endpoints.
 
 ---
 

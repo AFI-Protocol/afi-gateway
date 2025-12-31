@@ -23,7 +23,7 @@ import {
   checkAfiReactorHealth,
   getAfiReactorBaseUrl,
   type TradingViewLikeDraft,
-  type FroggyPipelineResult,
+  type ReactorScoredSignalV1,
   type HealthCheckResponse,
 } from "../../src/afiClient.js";
 
@@ -31,7 +31,7 @@ import {
  * In-memory cache for the last Froggy result (for Phoenix to explain).
  * In a real implementation, this would be stored in a database or session store.
  */
-let lastFroggyResult: FroggyPipelineResult | null = null;
+let lastFroggyResult: ReactorScoredSignalV1 | null = null;
 
 /**
  * Action: Submit Froggy Draft (Alpha)
@@ -41,12 +41,12 @@ let lastFroggyResult: FroggyPipelineResult | null = null;
 const submitFroggyDraftAction: Action = {
   name: "SUBMIT_FROGGY_DRAFT",
   description:
-    "Submit a trend-pullback signal draft to AFI Reactor's Froggy pipeline. Returns validator decision and simulated execution. DEV/DEMO ONLY - no real trading, no emissions.",
+    "Submit a trend-pullback signal draft to AFI Reactor's Froggy scoring pipeline. Returns scored signal with analystScore, scoredAt, decayParams. DEV/DEMO ONLY - no real trading, no emissions.",
   similes: [
     "Submit signal to Froggy",
     "Send draft to AFI Reactor",
     "Run Froggy pipeline",
-    "Validate this setup",
+    "Score this setup",
   ],
   examples: [
     [
@@ -96,7 +96,7 @@ const submitFroggyDraftAction: Action = {
       lastFroggyResult = result;
 
       runtime.logger.info(
-        `[SUBMIT_FROGGY_DRAFT] Result: decision=${result.validatorDecision?.decision}, execution=${result.execution?.status}`
+        `[SUBMIT_FROGGY_DRAFT] Result: signalId=${result.signalId}, uwrScore=${result.analystScore.uwrScore}`
       );
 
       return {
@@ -154,15 +154,17 @@ const checkAfiReactorHealthAction: Action = {
 /**
  * Action: Explain Last Froggy Decision (Phoenix)
  *
- * Allows Phoenix to retrieve and explain the last Froggy decision.
+ * Allows Phoenix to retrieve and explain the last Froggy scored signal.
+ *
+ * Updated for scored-only architecture (no validator/execution).
  */
 const explainLastFroggyDecisionAction: Action = {
   name: "EXPLAIN_LAST_FROGGY_DECISION",
   description:
-    "Retrieve the last Froggy pipeline result and explain it in plain language. Returns validator decision, execution details, and context. Read-only.",
+    "Retrieve the last Froggy pipeline result and explain it in plain language. Returns scored signal with analystScore, scoredAt, decayParams. Read-only.",
   similes: [
-    "Explain the last Froggy decision",
-    "What was the last signal result?",
+    "Explain the last Froggy result",
+    "What was the last signal score?",
     "Tell me about the last Froggy run",
   ],
   validate: async () => true,
@@ -174,12 +176,12 @@ const explainLastFroggyDecisionAction: Action = {
         runtime.logger.warn("[EXPLAIN_LAST_FROGGY_DECISION] No Froggy result cached");
         return {
           success: false,
-          error: "No Froggy decision available. Alpha hasn't submitted any signals yet.",
+          error: "No Froggy result available. Alpha hasn't submitted any signals yet.",
         };
       }
 
       runtime.logger.info(
-        `[EXPLAIN_LAST_FROGGY_DECISION] Found result: signalId=${lastFroggyResult.signalId}`
+        `[EXPLAIN_LAST_FROGGY_DECISION] Found result: signalId=${lastFroggyResult.signalId}, uwrScore=${lastFroggyResult.analystScore.uwrScore}`
       );
 
       return {
@@ -199,17 +201,15 @@ const explainLastFroggyDecisionAction: Action = {
 /**
  * RUN_AFI_ELIZA_DEMO Action
  *
- * DEMO-ONLY: AFI Eliza Demo – safe to show in ElizaOS demo
+ * ⚠️ DISABLED: The /demo/afi-eliza-demo endpoint has been removed from Reactor.
+ * Reactor is now scoring-only (no demo endpoints, no validator/execution).
  *
- * Runs a pre-configured BTC trend-pullback signal through the Froggy pipeline
- * and returns a narrative summary suitable for Phoenix to present.
- *
- * This is a convenience action for the AFI Eliza Demo.
+ * Use SUBMIT_FROGGY_DRAFT action instead to submit signals to the scoring pipeline.
  */
 export const runAfiElizaDemoAction: Action = {
   name: "RUN_AFI_ELIZA_DEMO",
   description:
-    "Run a pre-configured AFI Eliza Demo signal through the Froggy pipeline. Returns a narrative summary for Phoenix to present. DEMO-ONLY.",
+    "DISABLED: Demo endpoint removed. Use SUBMIT_FROGGY_DRAFT instead to submit signals to the Froggy scoring pipeline.",
   similes: [
     "run afi eliza demo",
     "run afi demo",
@@ -233,7 +233,7 @@ export const runAfiElizaDemoAction: Action = {
       },
     ],
   ],
-  validate: async () => true,
+  validate: async () => false, // Disabled
   handler: async (
     runtime: IAgentRuntime,
     message: Memory,
@@ -241,96 +241,34 @@ export const runAfiElizaDemoAction: Action = {
     options?: any,
     callback?: any
   ) => {
-    try {
-      runtime.logger.info("🎯 Running AFI Eliza Demo via /demo/afi-eliza-demo endpoint...");
+    runtime.logger.warn("[RUN_AFI_ELIZA_DEMO] Action is disabled (endpoint removed from Reactor)");
 
-      // Call the AFI Eliza Demo endpoint (includes stage summaries)
-      const baseUrl = getAfiReactorBaseUrl();
-      const endpoint = `${baseUrl}/demo/afi-eliza-demo`;
+    const errorMessage = `
+⚠️ **AFI Eliza Demo Disabled**
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+The /demo/afi-eliza-demo endpoint has been removed from AFI Reactor.
+
+Reactor is now a **scoring-only pipeline** (ingest → enrich → score → persist).
+
+To submit signals for scoring, use:
+- The SUBMIT_FROGGY_DRAFT action (via Alpha Scout)
+- The /api/webhooks/tradingview endpoint directly
+- The /api/ingest/cpj endpoint for CPJ signals
+
+For more information, see the AFI Reactor documentation.
+    `.trim();
+
+    if (callback) {
+      callback({
+        text: errorMessage,
+        action: "RUN_AFI_ELIZA_DEMO",
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `AFI Reactor Eliza Demo returned ${response.status}: ${errorText}`
-        );
-      }
-
-      const result = await response.json();
-
-      // Build narrative summary using stage summaries
-      const stageNarrative = result.stageSummaries
-        ? result.stageSummaries
-            .map((stage: any, index: number) => {
-              let line = `${index + 1}. ✅ **${stage.persona}** (${stage.stage}): ${stage.summary}`;
-              if (stage.enrichmentCategories) {
-                line += `\n   - Enrichment legos: ${stage.enrichmentCategories.join(", ")}`;
-              }
-              if (stage.uwrScore !== undefined) {
-                line += `\n   - UWR Score: ${stage.uwrScore.toFixed(2)}`;
-              }
-              if (stage.decision) {
-                line += `\n   - Decision: ${stage.decision}`;
-              }
-              return line;
-            })
-            .join("\n\n")
-        : "Stage summaries not available";
-
-      const narrative = `
-🎯 **AFI Eliza Demo Complete**
-
-**Signal**: ${result.meta.symbol} ${result.meta.timeframe} ${result.meta.direction}
-**Strategy**: ${result.meta.strategy}
-
-**Pipeline Flow** (Alpha → Pixel Rick → Froggy → Val Dook):
-
-${stageNarrative}
-
----
-
-**Final Validator Decision**:
-- **Decision**: ${result.validatorDecision.decision}
-- **Confidence**: ${result.validatorDecision.uwrConfidence.toFixed(2)}
-- **Reason Codes**: ${result.validatorDecision.reasonCodes?.join(", ") || "N/A"}
-
-**Execution** (simulated):
-- **Status**: ${result.execution.status}
-- **Type**: ${result.execution.type || "N/A"}
-- **Asset**: ${result.execution.asset || "N/A"}
-- **Amount**: ${result.execution.amount || "N/A"}
-- **Price**: ${result.execution.simulatedPrice || "N/A"}
-
----
-
-⚠️ **DEMO ONLY**: No real trading occurred. No AFI tokens minted. This demonstrates the signal processing pipeline only.
-
-**Key Insight**: Pixel Rick's enrichment legos are modular. Contributors can build and monetize custom enrichment packs without building full strategies.
-      `.trim();
-
-      if (callback) {
-        callback({
-          text: narrative,
-          action: "RUN_AFI_ELIZA_DEMO",
-        });
-      }
-
-      return {
-        success: true,
-        narrative,
-        result,
-      };
-    } catch (error) {
-      runtime.logger.error("AFI Eliza demo failed:", error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-      };
     }
+
+    return {
+      success: false,
+      error: errorMessage,
+    };
   },
 };
 
