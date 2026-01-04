@@ -3,7 +3,7 @@
  *
  * This server uses @elizaos/server to provide the complete ElizaOS API
  * for the AFI web client, including:
- * - Multi-agent runtime (Phoenix, Alpha, Froggy, Pixel Rick, Val Dook)
+ * - Multi-agent runtime (Phoenix)
  * - REST API (/agents, /agents/:id/message, etc.)
  * - WebSocket support for real-time chat
  * - Database persistence (optional)
@@ -16,10 +16,6 @@ import { env } from "./config/env.js";
 import { AgentServer } from "@elizaos/server";
 import { elizaLogger } from "@elizaos/core";
 import { phoenixCharacter } from "./phoenix.character.js";
-import { alphaCharacter } from "./alpha.character.js";
-import { froggyCharacter } from "./froggy.character.js";
-import { pixelRickCharacter } from "./pixelRick.character.js";
-import { valDookCharacter } from "./valDook.character.js";
 import afiReactorActionsPlugin from "../plugins/afi-reactor-actions/index.js";
 import afiOpenAIModelsPlugin from "../plugins/afi-openai-models/index.js";
 
@@ -63,10 +59,6 @@ async function main() {
     // Start all AFI agents
     elizaLogger.info("🤖 Starting AFI agents...");
     await server.startAgent(phoenixCharacter);
-    await server.startAgent(alphaCharacter);
-    await server.startAgent(froggyCharacter);
-    await server.startAgent(pixelRickCharacter);
-    await server.startAgent(valDookCharacter);
 
     elizaLogger.success("✅ Server initialized and agents started");
 
@@ -84,7 +76,7 @@ async function main() {
           description: "AFI Eliza Gateway - Full ElizaOS Server with AFI agents",
           environment: process.env.NODE_ENV || "development",
           timestamp: new Date().toISOString(),
-          afiAgents: ["Phoenix", "Alpha", "Froggy", "Pixel Rick", "Val Dook"],
+          afiAgents: ["Phoenix"],
           afiReactorUrl: process.env.AFI_REACTOR_BASE_URL || "http://localhost:8080",
           endpoints: {
             elizaos: [

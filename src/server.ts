@@ -5,13 +5,13 @@
  *
  * Purpose:
  * - Expose AFI Gateway as a long-running HTTP service
- * - Provide health checks and demo endpoints
+ * - Provide health check endpoints
  * - Designed for Railway deployment (PORT-based, 0.0.0.0 binding)
  *
  * Architecture:
  * - This server is a STATELESS HTTP API wrapper around AFI Gateway
  * - It does NOT replace the CLI interface (see src/index.ts for CLI)
- * - It provides REST endpoints for health checks and demos
+ * - It provides REST endpoints for health checks
  *
  * Environment Variables:
  * - PORT: HTTP server port (default: 8080)
@@ -21,7 +21,6 @@
  *
  * Routes:
  * - GET /healthz — Health check endpoint
- * - GET /demo/ping — Simple ping endpoint with version info
  *
  * @module server
  */
@@ -99,31 +98,10 @@ app.get("/", (req: Request, res: Response) => {
     routes: [
       { method: "GET", path: "/", description: "Service information" },
       { method: "GET", path: "/healthz", description: "Health check" },
-      { method: "GET", path: "/demo/ping", description: "Ping endpoint" },
     ],
   };
 
   elizaLogger.debug("Root endpoint requested", response);
-  res.status(200).json(response);
-});
-
-/**
- * GET /demo/ping
- *
- * Simple ping endpoint to verify the server is alive.
- *
- * Returns:
- * - 200 OK with message and version
- */
-app.get("/demo/ping", (req: Request, res: Response) => {
-  const response = {
-    message: "AFI Gateway is alive",
-    version: packageVersion,
-    timestamp: new Date().toISOString(),
-    service: "afi-gateway",
-  };
-
-  elizaLogger.debug("Ping requested", response);
   res.status(200).json(response);
 });
 
@@ -137,7 +115,6 @@ app.use((req: Request, res: Response) => {
     availableRoutes: [
       "GET /",
       "GET /healthz",
-      "GET /demo/ping",
     ],
   });
 });
@@ -162,7 +139,6 @@ async function startServer() {
       elizaLogger.info("   Available Routes:");
       elizaLogger.info("     GET  /              — Service info");
       elizaLogger.info("     GET  /healthz       — Health check");
-      elizaLogger.info("     GET  /demo/ping     — Ping endpoint");
       elizaLogger.info("");
       elizaLogger.info("   ⚠️  HTTP-only mode: No CLI interface");
       elizaLogger.info("   ⚠️  For CLI mode, run: npm run dev");

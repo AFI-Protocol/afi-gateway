@@ -172,7 +172,7 @@ When running in **full server mode** (`pnpm dev:server-full`), the gateway provi
   ```
 
 ### Agent API (ElizaOS Standard)
-- **GET /api/agents** — List all available agents (Phoenix, Alpha, Froggy, Pixel Rick, Val Dook)
+- **GET /api/agents** — List all available agents (Phoenix)
   ```bash
   curl http://localhost:8080/api/agents
   ```
@@ -202,8 +202,8 @@ When running in **full server mode** (`pnpm dev:server-full`), the gateway provi
 
 This repository uses MongoDB for **gateway-specific data only**:
 
-- ✅ Chat/session history for Phoenix & friends
-- ✅ Local/demo data (e.g., healthcheck collection)
+- ✅ Chat/session history for Phoenix
+- ✅ Gateway-specific data (e.g., healthcheck collection)
 - ✅ Future gateway-specific metadata
 
 **IMPORTANT**: This is **NOT** for TSSD vault data. The canonical TSSD vault lives in other AFI repos (`afi-reactor`, `afi-infra`) and uses separate database and collection names.
@@ -279,61 +279,6 @@ await sessions.insertOne({ userId: "123", createdAt: new Date() });
 
 // Graceful shutdown
 await closeMongoConnection();
-```
-
----
-
-## Prize Pipeline Demo — "Pipeline with Friends"
-
-**Status**: Ready for ElizaOS team demo
-**Purpose**: Demonstrate AFI's signal processing pipeline using Phoenix, Alpha, and Val Dook personas
-
-See **[PRIZE_DEMO.md](./PRIZE_DEMO.md)** for the full demo script.
-
-### Quick Start
-
-1. **Start AFI Reactor** (backend):
-   ```bash
-   cd /Users/secretservice/AFI_Modular_Repos/afi-reactor
-   npm run dev
-   # Should start on http://localhost:8080
-   ```
-
-2. **Start AFI Gateway** (agent runtime):
-   ```bash
-   cd /Users/secretservice/AFI_Modular_Repos/afi-eliza-gateway
-   npm run dev
-   # Starts ElizaOS runtime with Phoenix, Alpha, and Val Dook characters
-   ```
-
-3. **Run the demo** (via Phoenix):
-   - **User**: "Phoenix, run the prize demo"
-   - **Phoenix**: [calls `RUN_PRIZE_DEMO` action and presents narrative summary]
-
-The demo runs a pre-configured BTC trend-pullback signal through the 6-stage Froggy pipeline and shows how Phoenix (narrator), Alpha (scout), and Val Dook (validator) work together.
-
-**DEMO-ONLY**: No real trading, no AFI minting, simulated execution only.
-
----
-
-### AFIScout Smoke Test
-
-AFIScout is an ElizaOS character that turns natural-language trade ideas into AFI-ready **draft** signal payloads (no PoI/PoInsight/UWR/Novelty/emissions/tokenomics). The smoke script runs locally with an in-memory runtime (no DB, no backends) and logs a single draft JSON.
-
-```bash
-npm run afiscout:smoke
-```
-
-What it does:
-- Creates a minimal AgentRuntime with AFIScout only.
-- Feeds a sample trade idea to AFIScout.
-- Invokes the `emitAfiSignalDraft` action once and logs the resulting `AfiScoutSignalDraft` to stdout.
-
-Boundaries:
-- Local demo/debug only; it does NOT send anything to AFI or any external service.
-- Draft-only outbox; no validation, scoring, tokenomics, or vault writes.
-
-See `docs/AFI_SIGNAL_OUTBOX_README.md` for a conceptual view of how these drafts could be forwarded into AFI in the future.
 ```
 
 ---
