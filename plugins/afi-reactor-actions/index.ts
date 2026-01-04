@@ -1,14 +1,16 @@
 /**
  * AFI Reactor Actions Plugin for ElizaOS
  *
- * Provides actions for interacting with afi-reactor's signal scoring pipeline.
+ * Provides generic actions for interacting with afi-reactor's signal scoring pipeline.
+ * These actions can be used by any custom character built with this framework.
  *
  * Actions provided:
  * - SUBMIT_SIGNAL_DRAFT: Submit a signal draft to AFI scoring pipeline
  * - CHECK_AFI_REACTOR_HEALTH: Check if AFI Reactor is online
  * - EXPLAIN_LAST_DECISION: Explain last signal decision
+ * - DESCRIBE_ENRICHMENT_LAYERS: Explain enrichment legos and modular enrichment economy
  *
- * Part of: afi-gateway integration with afi-reactor
+ * Part of: afi-gateway framework for custom character development
  */
 
 import type { Plugin, Action, IAgentRuntime, Memory, State } from "@elizaos/core";
@@ -35,7 +37,7 @@ let lastSignalResult: ReactorScoredSignalV1 | null = null;
 const submitSignalDraftAction: Action = {
   name: "SUBMIT_SIGNAL_DRAFT",
   description:
-    "Submit a signal draft to AFI Reactor's scoring pipeline. Returns scored signal with analystScore, scoredAt, decayParams.",
+    "Submit a signal draft to AFI Reactor's scoring pipeline. Returns scored signal with analystScore, scoredAt, decayParams. This action can be used by any custom character.",
   similes: [
     "Submit signal",
     "Send draft to AFI Reactor",
@@ -84,6 +86,9 @@ const submitSignalDraftAction: Action = {
 
       runtime.logger.info(`[SUBMIT_SIGNAL_DRAFT] Submitting draft: ${JSON.stringify(draft)}`);
 
+      // Submit signal draft to AFI Reactor scoring pipeline
+      // Note: runFroggyTrendPullback is a specific strategy implementation
+      // Custom characters can implement their own strategies
       const result = await runFroggyTrendPullback(draft);
 
       // Cache result for explanation
@@ -115,7 +120,7 @@ const submitSignalDraftAction: Action = {
 const checkAfiReactorHealthAction: Action = {
   name: "CHECK_AFI_REACTOR_HEALTH",
   description:
-    "Check if AFI Reactor is online and ready. Returns health status and message. Read-only, no side effects.",
+    "Check if AFI Reactor is online and ready. Returns health status and message. Read-only, no side effects. This action can be used by any custom character.",
   similes: [
     "Is AFI Reactor online?",
     "Check AFI Reactor status",
@@ -205,7 +210,7 @@ const explainLastDecisionAction: Action = {
 export const describeEnrichmentLayersAction: Action = {
   name: "DESCRIBE_ENRICHMENT_LAYERS",
   description:
-    "Explain AFI's enrichment legos and how contributors can build modular enrichment packs.",
+    "Explain AFI's enrichment legos and how contributors can build modular enrichment packs. This action can be used by any custom character to explain the enrichment system.",
   similes: [
     "explain enrichment",
     "what are enrichment legos",
@@ -314,12 +319,13 @@ Enrichment legos are modular data feeds that enrich raw signals with context bef
 /**
  * AFI Reactor Actions Plugin
  *
- * ElizaOS Plugin that provides actions for interacting with afi-reactor's signal scoring pipeline.
+ * ElizaOS Plugin that provides generic actions for interacting with afi-reactor's signal scoring pipeline.
+ * These actions are designed to be used by any custom character built with the afi-gateway framework.
  */
 export const afiReactorActionsPlugin: Plugin = {
   name: "@afi/plugin-afi-reactor-actions",
   description:
-    "Actions for interacting with AFI Reactor's signal scoring pipeline. Provides signal submission and health/explanation.",
+    "Generic actions for interacting with AFI Reactor's signal scoring pipeline. Provides signal submission, health checks, and explanation capabilities for custom characters.",
 
   /**
    * Plugin initialization

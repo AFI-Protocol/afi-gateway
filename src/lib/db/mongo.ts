@@ -3,7 +3,7 @@
  *
  * SCOPE:
  * This helper is for gateway-specific data ONLY:
- *   - Chat/session history for Phoenix & friends
+ *   - Chat/session history for custom characters
  *   - Demo/dev-only documents (e.g., healthcheck collection)
  *   - Future gateway-specific metadata
  *

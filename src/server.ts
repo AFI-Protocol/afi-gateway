@@ -13,6 +13,14 @@
  * - It does NOT replace the CLI interface (see src/index.ts for CLI)
  * - It provides REST endpoints for health checks
  *
+ * CUSTOM CHARACTER INTEGRATION:
+ * This gateway is now a framework for building custom characters with skills.
+ * To integrate custom characters:
+ *
+ * 1. Create character files in src/characters/your-character.ts
+ * 2. Use server-full.ts for full ElizaOS API with character support
+ * 3. See docs/CHARACTER_DEVELOPMENT.md for detailed guides
+ *
  * Environment Variables:
  * - PORT: HTTP server port (default: 8080)
  * - NODE_ENV: Environment (development/production)
@@ -92,13 +100,14 @@ app.get("/", (req: Request, res: Response) => {
   const response = {
     service: "afi-gateway",
     version: packageVersion,
-    description: "AFI Gateway - HTTP API for AFI integration",
+    description: "AFI Gateway - Framework for custom character development",
     environment: process.env.NODE_ENV || "development",
     timestamp: new Date().toISOString(),
     routes: [
       { method: "GET", path: "/", description: "Service information" },
       { method: "GET", path: "/healthz", description: "Health check" },
     ],
+    note: "This is the AFI Gateway framework. No pre-built characters are included. Use server-full.ts for full ElizaOS API with custom character support. See docs/CHARACTER_DEVELOPMENT.md for guides.",
   };
 
   elizaLogger.debug("Root endpoint requested", response);
@@ -142,6 +151,8 @@ async function startServer() {
       elizaLogger.info("");
       elizaLogger.info("   ⚠️  HTTP-only mode: No CLI interface");
       elizaLogger.info("   ⚠️  For CLI mode, run: npm run dev");
+      elizaLogger.info("   💡 For custom characters, use: npm run dev:server-full");
+      elizaLogger.info("   📚 See docs/CHARACTER_DEVELOPMENT.md for guides");
       elizaLogger.info("");
     });
   } catch (error) {

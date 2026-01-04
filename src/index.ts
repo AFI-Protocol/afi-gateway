@@ -1,10 +1,10 @@
 /**
- * AFI ↔ Eliza Gateway
+ * AFI ↔ Eliza Gateway Framework
  *
- * This is the entrypoint for the AFI-Eliza integration gateway.
+ * This is entrypoint for AFI-Eliza integration gateway framework.
  *
  * Purpose:
- * - Bootstrap Phoenix/Eliza runtime with AFI-specific character configs
+ * - Provide framework for custom character development
  * - Wire AFI-specific Eliza plugins
  * - Provide client code that calls AFI services (Reactor/Codex/Core) over HTTP/WS
  *
@@ -17,16 +17,19 @@
  * Dependency Direction:
  * - Eliza gateway (this repo) → depends on → AFI services (afi-reactor, afi-core)
  * - AFI services NEVER depend on this gateway
+ *
+ * CUSTOM CHARACTER DEVELOPMENT:
+ * This gateway is now a framework for building custom characters with skills.
+ * No pre-built characters are included. To add your own character:
+ *
+ * 1. Create a character file in src/characters/your-character.ts
+ * 2. Import and start your character in this file
+ * 3. See docs/CHARACTER_DEVELOPMENT.md for detailed guides
  */
 
 // IMPORTANT: Import env config FIRST to ensure environment is loaded and validated
 import { env } from "./config/env.js";
 import { AgentRuntime, elizaLogger } from "@elizaos/core";
-import { phoenixCharacter } from "./phoenix.character.js";
-import { alphaCharacter } from "./alpha.character.js";
-import { pixelRickCharacter } from "./pixelRick.character.js";
-import { froggyCharacter } from "./froggy.character.js";
-import { valDookCharacter } from "./valDook.character.js";
 import { afiTelemetryPlugin } from "../plugins/afi-telemetry/index.js";
 import { afiReactorActionsPlugin } from "../plugins/afi-reactor-actions/index.js";
 import { afiScoutCharacter } from "./afiscout/index.js";
@@ -34,13 +37,12 @@ import { handleAfiCliCommand } from "./afiCli.js";
 import * as readline from "readline";
 
 /**
- * Main entrypoint for AFI Eliza Gateway
+ * Main entrypoint for AFI Eliza Gateway Framework
  *
  * This runtime:
- * 1. Loads the Phoenix character configuration
- * 2. Initializes the ElizaOS AgentRuntime
- * 3. Registers plugins (bootstrap, node, future AFI plugins)
- * 4. Starts the agent runtime
+ * 1. Initializes ElizaOS AgentRuntime framework
+ * 2. Registers plugins (bootstrap, node, AFI plugins)
+ * 3. Starts agent runtime (ready for custom characters)
  *
  * Environment Variables Required:
  * - OPENAI_API_KEY: OpenAI API key for LLM (if using OpenAI)
@@ -51,16 +53,15 @@ import * as readline from "readline";
  */
 async function main() {
   try {
-    elizaLogger.info("🚀 Starting AFI Eliza Gateway...");
-    elizaLogger.info(`📋 Loading Phoenix character: ${phoenixCharacter.name}`);
+    elizaLogger.info("🚀 Starting AFI Eliza Gateway Framework...");
+    elizaLogger.info("📋 Framework ready for custom character development");
 
     // Environment is already validated by src/config/env.ts
     // If we got here, OPENAI_API_KEY is valid and loaded
 
-    // Initialize AgentRuntime with Phoenix character by default
-    elizaLogger.info("🔧 Initializing AgentRuntime...");
+    // Initialize AgentRuntime framework (no default character)
+    elizaLogger.info("🔧 Initializing AgentRuntime framework...");
     const runtime = new AgentRuntime({
-      character: phoenixCharacter,
       adapter: undefined, // TODO: Add database adapter when needed (e.g., SQLite, PostgreSQL)
     });
 
@@ -78,19 +79,15 @@ async function main() {
       "✅ AFI Reactor Actions Plugin registered (DEV/DEMO ONLY - no real trading)"
     );
 
-    // Optional: register additional characters as alternate profiles
-    elizaLogger.info(`🔌 AFIScout character available: ${afiScoutCharacter.name}`);
-    elizaLogger.info(`🔌 Alpha character available: ${alphaCharacter.name}`);
-    elizaLogger.info(`🔌 Pixel Rick character available: ${pixelRickCharacter.name}`);
-    elizaLogger.info(`🔌 Froggy character available: ${froggyCharacter.name}`);
-    elizaLogger.info(`🔌 Val Dook character available: ${valDookCharacter.name}`);
+    // Example character available (AFIScout)
+    elizaLogger.info(`🔌 Example character available: ${afiScoutCharacter.name}`);
 
     // TODO: Register additional plugins when available:
     // - @elizaos/plugin-node (Node.js services: browser, PDF, speech, etc.)
     // - @afi/plugin-afi-skills (skill invocation via AFI APIs)
 
-    elizaLogger.success("✅ AgentRuntime initialized successfully");
-    elizaLogger.info(`🤖 Phoenix is ready: ${phoenixCharacter.bio[0]}`);
+    elizaLogger.success("✅ AgentRuntime framework initialized successfully");
+    elizaLogger.info("🤖 Framework ready for custom characters");
 
     // TODO: Start Discord client when Discord credentials are provided
     // if (process.env.DISCORD_APPLICATION_ID && process.env.DISCORD_API_TOKEN) {
@@ -99,8 +96,9 @@ async function main() {
     //   await discordClient.start();
     // }
 
-    elizaLogger.info("🎯 AFI Eliza Gateway is running");
-    elizaLogger.info("📚 Phoenix is ready to explain AFI Protocol");
+    elizaLogger.info("🎯 AFI Eliza Gateway Framework is running");
+    elizaLogger.info("📚 Create custom characters in src/characters/");
+    elizaLogger.info("💡 See docs/CHARACTER_DEVELOPMENT.md for guides");
 
     // Start simple CLI interface
     elizaLogger.info("💬 Starting AFI CLI interface...");
@@ -136,26 +134,27 @@ async function main() {
         }
       } else if (trimmed) {
         // For non-AFI commands, show a helpful message
-        console.log("\n💡 This is the AFI CLI. Use '/afi help' for available commands.\n");
+        console.log("\n💡 This is the AFI Gateway Framework. Use '/afi help' for available commands.\n");
+        console.log("💡 To create custom characters, see docs/CHARACTER_DEVELOPMENT.md\n");
       }
 
       rl.prompt();
     });
 
-    // Keep the process alive
+    // Keep process alive
     process.on("SIGINT", async () => {
-      elizaLogger.info("🛑 Shutting down AFI Eliza Gateway...");
+      elizaLogger.info("🛑 Shutting down AFI Eliza Gateway Framework...");
       rl.close();
       process.exit(0);
     });
 
   } catch (error) {
-    elizaLogger.error("❌ Failed to start AFI Eliza Gateway:", String(error));
+    elizaLogger.error("❌ Failed to start AFI Eliza Gateway Framework:", String(error));
     process.exit(1);
   }
 }
 
-// Start the runtime
+// Start runtime
 main().catch((error) => {
   elizaLogger.error("❌ Unhandled error in main():", String(error));
   process.exit(1);

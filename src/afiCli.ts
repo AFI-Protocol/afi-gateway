@@ -12,8 +12,8 @@
  *
  * Architecture:
  * - This is a thin routing layer that calls existing AFI Reactor actions
- * - Phoenix can also front these same flows via natural language
- * - No duplicate logic: shared helpers are used by both CLI and Phoenix
+ * - Custom characters can also front these same flows via natural language
+ * - No duplicate logic: shared helpers are used by both CLI and custom characters
  */
 
 import type { IAgentRuntime } from "@elizaos/core";
@@ -137,7 +137,7 @@ function getAfiCliHelp(): string {
   /afi validator explain-last  Explain the last validator decision (if available)
   /afi help                 Show this help message
 
-**Note**: Phoenix can also run these flows via natural language.
+**Note**: Custom characters can also run these flows via natural language.
   `.trim();
 }
 

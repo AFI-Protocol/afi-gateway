@@ -10,6 +10,7 @@
  * 4. Integration with AFI client
  *
  * Note: These tests use mocked fetch calls to avoid requiring a running AFI Reactor instance.
+ * These actions are generic and can be used by any custom character built with the afi-gateway framework.
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
@@ -41,7 +42,7 @@ const createMockMessage = (text: string): Memory => {
   } as any;
 };
 
-describe("AFI Reactor Actions Plugin", () => {
+describe("AFI Reactor Actions Plugin - Framework Tests", () => {
   beforeEach(() => {
     // Reset mocks before each test
     vi.clearAllMocks();
@@ -50,7 +51,7 @@ describe("AFI Reactor Actions Plugin", () => {
   it("should export plugin with correct structure", () => {
     expect(afiReactorActionsPlugin).toBeDefined();
     expect(afiReactorActionsPlugin.name).toBe("@afi/plugin-afi-reactor-actions");
-    expect(afiReactorActionsPlugin.actions).toHaveLength(3);
+    expect(afiReactorActionsPlugin.actions).toHaveLength(4); // 4 actions: SUBMIT_SIGNAL_DRAFT, CHECK_AFI_REACTOR_HEALTH, EXPLAIN_LAST_DECISION, DESCRIBE_ENRICHMENT_LAYERS
   });
 
   it("should have SUBMIT_SIGNAL_DRAFT action", () => {
@@ -118,7 +119,7 @@ describe("AFI Reactor Actions Plugin", () => {
   // TODO: Add tests for session caching (EXPLAIN_LAST_DECISION)
 });
 
-describe("AFI Reactor Actions Plugin - Integration", () => {
+describe("AFI Reactor Actions Plugin - Integration Tests", () => {
   it.skip("should submit signal draft (requires running AFI Reactor)", async () => {
     // This test requires a running AFI Reactor instance
     // Skip for now, run manually when AFI Reactor is available

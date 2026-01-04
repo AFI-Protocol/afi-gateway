@@ -1,16 +1,19 @@
 # afi-gateway
 
-**AFI's Universal Gateway**
+**AFI's Universal Gateway Framework for Custom Character Development**
 
-This repository is AFI's universal gateway for multiple interfaces and integrations. It acts as an external client that calls AFI services over HTTP/WebSocket APIs.
+This repository is AFI's universal gateway framework for building custom characters with skills. It acts as an external client that calls AFI services over HTTP/WebSocket APIs.
+
+**🎯 Framework Focus**: This gateway is designed as a framework for community-driven character development. No pre-built characters are included. Create your own custom characters with skills using the guides in `docs/CHARACTER_DEVELOPMENT.md`.
 
 ---
 
 ## What This Repo Contains
 
-- **Phoenix/Eliza character configs** — Character definitions for AFI-specific agents
+- **Framework for custom characters** — Build your own characters with skills
 - **AFI-specific Eliza plugins** — Plugins that integrate Eliza with AFI signal scoring, validation, and tokenomics
 - **Client code** — HTTP/WS clients that call AFI services (afi-reactor, afi-core, Codex)
+- **Character development guides** — Documentation for creating custom characters
 
 ---
 
@@ -27,13 +30,13 @@ This repository is AFI's universal gateway for multiple interfaces and integrati
 ```
 ┌─────────────────────────────────────┐
 │  afi-gateway (this repo)            │
-│  - Eliza character configs          │
+│  - Custom character framework       │
 │  - AFI-specific Eliza plugins       │
 │  - HTTP/WS clients                  │
 └──────────────┬──────────────────────┘
-               │
-               │ HTTP/WS API calls
-               ▼
+                │
+                │ HTTP/WS API calls
+                ▼
 ┌─────────────────────────────────────┐
 │  AFI Services                       │
 │  - afi-reactor (DAG orchestration)  │
@@ -114,20 +117,20 @@ AFI_REACTOR_BASE_URL=http://localhost:8080
 **Development Modes:**
 
 ```bash
-# CLI mode (interactive terminal with Phoenix)
+# CLI mode (interactive terminal)
 pnpm dev
 # Runs: tsx src/index.ts
-# Provides: AFI> CLI prompt for chatting with Phoenix
+# Provides: AFI> CLI prompt for chatting with custom characters
 
 # HTTP server mode (minimal Express server)
 pnpm dev:server
 # Runs: tsx src/server.ts
-# Provides: /healthz, /demo/ping endpoints on port 8080
+# Provides: /healthz, / endpoints on port 8080
 
 # Full ElizaOS server mode (recommended for web client)
 pnpm dev:server-full
 # Runs: tsx src/server-full.ts
-# Provides: Full ElizaOS API with all agents on port 8080
+# Provides: Full ElizaOS API framework for custom characters on port 8080
 # Endpoints: /, /health, /api/health, /api/agents, WebSocket
 ```
 
@@ -148,8 +151,8 @@ pnpm test
 ```
 
 **Which mode should I use?**
-- **Local development with CLI**: `pnpm dev` (talk to Phoenix in terminal)
-- **Testing HTTP endpoints**: `pnpm dev:server-full` (full ElizaOS API)
+- **Local development with CLI**: `pnpm dev` (talk to custom characters in terminal)
+- **Testing HTTP endpoints**: `pnpm dev:server-full` (full ElizaOS API framework)
 - **Production deployment**: `pnpm build && pnpm start`
 
 ---
@@ -172,20 +175,20 @@ When running in **full server mode** (`pnpm dev:server-full`), the gateway provi
   ```
 
 ### Agent API (ElizaOS Standard)
-- **GET /api/agents** — List all available agents (Phoenix)
-  ```bash
-  curl http://localhost:8080/api/agents
-  ```
+- **GET /api/agents** — List all available custom agents
+   ```bash
+   curl http://localhost:8080/api/agents
+   ```
 - **POST /api/agents/:id/message** — Send a message to a specific agent
-  ```bash
-  curl -X POST http://localhost:8080/api/agents/AGENT_ID/message \
-    -H "Content-Type: application/json" \
-    -d '{"text": "Hello Phoenix!", "userId": "user123"}'
-  ```
+   ```bash
+   curl -X POST http://localhost:8080/api/agents/AGENT_ID/message \
+     -H "Content-Type: application/json" \
+     -d '{"text": "Hello!", "userId": "user123"}'
+   ```
 - **GET /api/agents/:id/rooms** — List rooms for a specific agent
-  ```bash
-  curl http://localhost:8080/api/agents/AGENT_ID/rooms
-  ```
+   ```bash
+   curl http://localhost:8080/api/agents/AGENT_ID/rooms
+   ```
 
 ### WebSocket
 - **ws://localhost:8080/** — Real-time chat via WebSocket (used by web UI)
@@ -202,7 +205,7 @@ When running in **full server mode** (`pnpm dev:server-full`), the gateway provi
 
 This repository uses MongoDB for **gateway-specific data only**:
 
-- ✅ Chat/session history for Phoenix
+- ✅ Chat/session history for custom characters
 - ✅ Gateway-specific data (e.g., healthcheck collection)
 - ✅ Future gateway-specific metadata
 
@@ -285,16 +288,16 @@ await closeMongoConnection();
 
 ## Safety Disclaimers
 
-**IMPORTANT**: Phoenix is an educational and informational agent. It does NOT:
+**IMPORTANT**: Custom characters built with this framework should follow these guidelines:
 
+**Characters should NOT**:
 - Provide financial advice or trade recommendations
 - Guarantee returns, yields, or APY
 - Execute transactions or sign contracts
 - Access user funds or wallets
 - Make promises about token prices or market outcomes
 
-**What Phoenix DOES**:
-
+**Characters CAN**:
 - Explain how AFI Protocol works (signal lifecycle, validators, governance)
 - Help users understand AFI's intelligence outputs
 - Point users to documentation and resources
@@ -310,10 +313,14 @@ await closeMongoConnection();
 afi-gateway/
 ├── src/
 │   ├── index.ts                  # Gateway entrypoint (ElizaOS runtime)
-│   ├── phoenix.character.ts      # Phoenix character definition
-│   ├── plugins/                  # AFI-specific Eliza plugins (future)
-│   ├── characters/               # Additional character configs (future)
-│   └── clients/                  # HTTP/WS clients for AFI services (future)
+│   ├── server-full.ts            # Full ElizaOS server with custom character support
+│   ├── server.ts                 # Minimal HTTP server for health checks
+│   ├── plugins/                  # AFI-specific Eliza plugins
+│   ├── characters/               # Custom character configs (create your own here)
+│   ├── clients/                  # HTTP/WS clients for AFI services
+│   └── afiscout/                 # Example character (AFIScout)
+├── docs/
+│   └── CHARACTER_DEVELOPMENT.md  # Guide for creating custom characters
 ├── dist/                         # Compiled TypeScript output
 ├── package.json
 ├── tsconfig.json
@@ -324,26 +331,38 @@ afi-gateway/
 
 ---
 
-## Phoenix Character
+## Custom Character Development
 
-Phoenix is AFI Protocol's frontline agent and primary human-facing voice.
+This gateway is designed as a framework for community-driven character development. No pre-built characters are included.
 
-**Governance Documentation**:
-- Persona specification: `afi-config/codex/governance/agents/PHOENIX_PERSONA.v0.1.md`
-- Agent universe context: `afi-config/codex/governance/agents/AFI_AGENT_UNIVERSE.v0.1.md`
+**Getting Started**:
 
-**Character File**: `src/phoenix.character.ts`
+1. **Create a Character**: See `docs/CHARACTER_DEVELOPMENT.md` for detailed guides
+2. **Use AFI Skills**: Characters can access AFI services through plugins
+3. **Deploy**: Start your character using `src/server-full.ts`
 
-**Key Characteristics**:
-- Warm, technically fluent, and clear communication style
-- Explains AFI's "financial brain" in plain language
-- Acts as a concierge into AFI tools, not the tool itself
-- Respects hard boundaries: NO financial advice, NO guarantees, NO raw data exposure
+**Example Character Structure**:
 
-**Interfaces** (current and planned):
-- Discord (primary, when Discord credentials are configured)
-- Web chat (future)
-- CLI (future)
+```typescript
+import type { Character } from "@elizaos/core";
+
+export const myCharacter: Character = {
+  name: "MyCharacter",
+  username: "mycharacter",
+  bio: ["Your character description"],
+  system: "Your character's system prompt...",
+  plugins: ["@elizaos/plugin-bootstrap", "@afi/plugin-afi-reactor-actions"],
+  // ... other character properties
+};
+```
+
+**Skills Available**:
+- Signal submission via AFI Reactor
+- Health checks and telemetry
+- Custom actions and evaluators
+- Integration with AFI services
+
+**See `docs/CHARACTER_DEVELOPMENT.md` for complete guides and examples.**
 
 ---
 
@@ -355,6 +374,15 @@ All changes must follow the AFI Droid Charter:
 - `afi-config/codex/governance/droids/AFI_DROID_CHARTER.v0.1.md`
 
 ---
+
+## Contributing
+
+See `AGENTS.md` for droid-specific instructions and boundaries.
+
+All changes must follow the AFI Droid Charter:
+- `afi-config/codex/governance/droids/AFI_DROID_CHARTER.v0.1.md`
+
+**Character Development**: See `docs/CHARACTER_DEVELOPMENT.md` for guides on creating custom characters.
 
 ## License
 

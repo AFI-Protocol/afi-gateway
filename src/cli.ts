@@ -9,7 +9,6 @@
 import { CliApp } from '@afi/cli-framework';
 import { handleAfiCliCommand } from './afiCli.js';
 import { AgentRuntime, elizaLogger } from "@elizaos/core";
-import { phoenixCharacter } from "./phoenix.character.js";
 import { afiTelemetryPlugin } from "../plugins/afi-telemetry/index.js";
 import { afiReactorActionsPlugin } from "../plugins/afi-reactor-actions/index.js";
 
@@ -23,8 +22,8 @@ class AfiGatewayCli extends CliApp {
   }
 
   public async getRuntime(): Promise<AgentRuntime> {
+    // Initialize AgentRuntime framework (no default character)
     const runtime = new AgentRuntime({
-      character: phoenixCharacter,
       adapter: undefined,
     });
 
@@ -41,7 +40,7 @@ const cli = new AfiGatewayCli();
 // Add commands
 cli
   .command('eliza-demo')
-  .description('Run the AFI Eliza Demo pipeline')
+  .description('Run AFI Eliza Demo pipeline')
   .action(async () => {
     const runtime = await cli.getRuntime();
     const result = await handleAfiCliCommand('eliza-demo', runtime);
@@ -75,5 +74,5 @@ cli
     console.log(result);
   });
 
-// Run the CLI
+// Run CLI
 cli.run();
