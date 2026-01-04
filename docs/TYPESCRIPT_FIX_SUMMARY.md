@@ -154,7 +154,7 @@ await server.start({
 The code now compiles cleanly and is ready for runtime testing:
 
 ```bash
-cd afi-eliza-gateway
+cd afi-gateway
 npm install  # Install @elizaos/server if not already done
 npm run dev:server-full
 ```

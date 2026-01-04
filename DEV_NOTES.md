@@ -148,7 +148,7 @@ Only needed for persistent chat history and session storage.
 ## File Structure
 
 ```
-afi-eliza-gateway/
+afi-gateway/
 ├── src/
 │   ├── index.ts              # CLI mode entrypoint
 │   ├── server.ts             # Minimal HTTP server

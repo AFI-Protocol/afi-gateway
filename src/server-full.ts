@@ -52,36 +52,21 @@ async function main() {
     const port = env.PORT;
     const dataDir = process.env.DATA_DIR || "./data/afi-eliza";
 
-    // Start server with unified config (auto-initializes + starts agents)
-    elizaLogger.info("🚀 Starting server with all AFI agents...");
-    await server.start({
-      port,
-      dataDir,
-      // Optional: PostgreSQL connection
-      // postgresUrl: process.env.DATABASE_URL,
-      agents: [
-        {
-          character: phoenixCharacter,
-          plugins: basePlugins,
-        },
-        {
-          character: alphaCharacter,
-          plugins: basePlugins,
-        },
-        {
-          character: froggyCharacter,
-          plugins: basePlugins,
-        },
-        {
-          character: pixelRickCharacter,
-          plugins: basePlugins,
-        },
-        {
-          character: valDookCharacter,
-          plugins: basePlugins,
-        },
-      ],
-    });
+    // Initialize server with data directory
+    elizaLogger.info("🔧 Initializing server...");
+    await server.initialize({ dataDir });
+
+    // Start HTTP server
+    elizaLogger.info("🚀 Starting HTTP server...");
+    await server.start(port);
+
+    // Start all AFI agents
+    elizaLogger.info("🤖 Starting AFI agents...");
+    await server.startAgent(phoenixCharacter);
+    await server.startAgent(alphaCharacter);
+    await server.startAgent(froggyCharacter);
+    await server.startAgent(pixelRickCharacter);
+    await server.startAgent(valDookCharacter);
 
     elizaLogger.success("✅ Server initialized and agents started");
 

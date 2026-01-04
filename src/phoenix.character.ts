@@ -8,7 +8,7 @@
  * - afi-config/codex/governance/agents/AFI_AGENT_UNIVERSE.v0.1.md (Section 3.1)
  *
  * Runtime behavior is governed by:
- * - afi-eliza-gateway/docs/AFI_AGENT_PLAYBOOK.v0.1.md
+ * - afi-gateway/docs/AFI_AGENT_PLAYBOOK.v0.1.md
  * - afi-eliza-gateway/AGENTS.md
  */
 

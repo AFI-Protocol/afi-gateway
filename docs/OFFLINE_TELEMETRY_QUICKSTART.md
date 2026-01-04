@@ -30,11 +30,11 @@ The offline telemetry smoke test verifies that the `@afi/plugin-afi-telemetry` p
 - npm (v9 or later)
 
 **Setup**:
-1. Clone the afi-eliza-gateway repository
+1. Clone the afi-gateway repository
 2. Install dependencies:
 
 ```bash
-cd afi-eliza-gateway
+cd afi-gateway
 npm install
 ```
 
@@ -44,7 +44,7 @@ That's it. No environment variables, no API keys, no configuration needed.
 
 ## Running the Smoke Test
 
-From the `afi-eliza-gateway` directory, run:
+From the `afi-gateway` directory, run:
 
 ```bash
 npm run telemetry:offline

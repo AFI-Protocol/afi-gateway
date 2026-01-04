@@ -14,7 +14,7 @@
  * Historical Purpose: Val Dook personified validator decision logic.
  * Current Status: Deprecated, kept for lore/backward compatibility only.
  *
- * Part of: afi-eliza-gateway agent layer (legacy)
+ * Part of: afi-gateway agent layer (legacy)
  */
 
 import type { Character } from "@elizaos/core";

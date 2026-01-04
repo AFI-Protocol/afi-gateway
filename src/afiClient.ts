@@ -17,7 +17,7 @@
  * - Support multiple environments (dev, staging, prod)
  * - Include telemetry and logging
  *
- * Part of: afi-eliza-gateway integration with afi-reactor
+ * Part of: afi-gateway integration with afi-reactor
  */
 
 /**

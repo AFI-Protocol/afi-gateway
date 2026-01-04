@@ -133,10 +133,10 @@ This ensures the full server behaves the same way as CLI mode, with all agents h
 ## 📋 FILES CHANGED
 
 **Modified**:
-1. `afi-eliza-gateway/src/server-full.ts` — Added `basePlugins` array and updated agent configs
+1. `afi-gateway/src/server-full.ts` — Added `basePlugins` array and updated agent configs
 
 **Created**:
-2. `afi-eliza-gateway/docs/MODEL_PROVIDER_FIX.md` — This summary
+2. `afi-gateway/docs/MODEL_PROVIDER_FIX.md` — This summary
 
 **Total Changes**: 1 file modified (minimal, surgical fix)
 
@@ -147,7 +147,7 @@ This ensures the full server behaves the same way as CLI mode, with all agents h
 The server is now ready for full testing with the AFI web client:
 
 ```bash
-cd afi-eliza-gateway
+cd afi-gateway
 npm run dev:server-full
 ```
 

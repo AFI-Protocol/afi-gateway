@@ -16,7 +16,7 @@
    - ✅ Configured to connect to `VITE_AFI_SERVER_URL`
    - ✅ Uses `@elizaos/api-client` to communicate with server
 
-2. **AFI Eliza Gateway** (`afi-eliza-gateway`)
+2. **AFI Eliza Gateway** (`afi-gateway`)
    - ✅ AFI personas defined (Phoenix, Alpha, Froggy, Pixel Rick, Val Dook)
    - ✅ AFI Reactor Actions Plugin working
    - ⚠️ **MISSING**: Full ElizaOS server API (agents, messaging, rooms)
@@ -34,7 +34,7 @@
 
 Instead of building a custom server, we should use `@elizaos/server` package which provides all the necessary APIs.
 
-### Option A: Integrate ElizaOS Server into afi-eliza-gateway (RECOMMENDED)
+### Option A: Integrate ElizaOS Server into afi-gateway (RECOMMENDED)
 
 **Pros**:
 - Full ElizaOS server API out of the box
@@ -66,7 +66,7 @@ Instead of building a custom server, we should use `@elizaos/server` package whi
 ### Step 1: Add ElizaOS Server Dependency ✅ DONE
 
 ```bash
-cd afi-eliza-gateway
+cd afi-gateway
 npm install @elizaos/server dotenv
 ```
 
@@ -134,7 +134,7 @@ npm run dev
 
 **Terminal 2: AFI Eliza Gateway (Full Server)**
 ```bash
-cd afi-eliza-gateway
+cd afi-gateway
 npm install  # First time only (installs @elizaos/server)
 npm run dev:server-full
 # Runs on http://localhost:3000
@@ -183,10 +183,10 @@ http://localhost:5173
 ### 📋 NEXT STEPS
 
 1. **Install Dependencies** (first time only):
-   ```bash
-   cd afi-eliza-gateway
-   npm install
-   ```
+    ```bash
+    cd afi-gateway
+    npm install
+    ```
 
 2. **Test Locally**:
    ```bash
@@ -195,7 +195,7 @@ http://localhost:5173
    npm run dev
 
    # Terminal 2: AFI Eliza Gateway (Full Server)
-   cd afi-eliza-gateway
+   cd afi-gateway
    npm run dev:server-full
 
    # Terminal 3: AFI Web Client

@@ -11,7 +11,7 @@
  * - Personality: Sarcastic, sharp, deeply technical, but ultimately helpful
  * - Communication style: TradingView power user meets AFI DAG architect
  * 
- * Part of: afi-eliza-gateway agent layer
+ * Part of: afi-gateway agent layer
  */
 
 import type { Character } from "@elizaos/core";

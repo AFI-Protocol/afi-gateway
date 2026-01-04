@@ -16,7 +16,7 @@ Get Discord and Telegram bots running with AFI knowledge base in 15 minutes.
 ## Step 1: Install Dependencies
 
 ```bash
-cd afi-eliza-gateway
+cd afi-gateway
 npm install
 ```
 
@@ -163,7 +163,7 @@ npm run dev:telegram
 ### Knowledge Base Empty
 
 - Make sure `afi-knowledge-hub` ingestion completed successfully
-- Verify both `afi-knowledge-hub` and `afi-eliza-gateway` use the same database
+- Verify both `afi-knowledge-hub` and `afi-gateway` use the same database
 - Check that `afi-docs/` directory exists relative to `afi-knowledge-hub/`
 - Re-run ingestion in `afi-knowledge-hub`: `cd ../afi-knowledge-hub && npm run ingest`
 

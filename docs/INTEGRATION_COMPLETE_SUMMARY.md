@@ -65,7 +65,7 @@ We successfully integrated AFI personas with the ElizaOS web client by following
 ### Before (Minimal Server)
 
 ```
-afi-eliza-gateway/src/server.ts
+afi-gateway/src/server.ts
 ├── Express HTTP server
 ├── Health check endpoints only
 ├── No ElizaOS runtime
@@ -77,7 +77,7 @@ afi-eliza-gateway/src/server.ts
 ### After (Full Server)
 
 ```
-afi-eliza-gateway/src/server-full.ts
+afi-gateway/src/server-full.ts
 ├── @elizaos/server (AgentServer class)
 ├── Multi-agent runtime
 │   ├── Phoenix (host/narrator)
@@ -102,7 +102,7 @@ afi-eliza-gateway/src/server-full.ts
 ### Prerequisites
 
 1. **AFI Reactor** running on `http://localhost:8080`
-2. **Environment variables** set in `afi-eliza-gateway/.env`:
+2. **Environment variables** set in `afi-gateway/.env`:
    ```bash
    OPENAI_API_KEY=sk-...
    AFI_REACTOR_BASE_URL=http://localhost:8080
@@ -111,7 +111,7 @@ afi-eliza-gateway/src/server-full.ts
 ### Step 1: Install Dependencies (First Time Only)
 
 ```bash
-cd afi-eliza-gateway
+cd afi-gateway
 npm install
 ```
 
@@ -131,7 +131,7 @@ npm run dev
 ### Step 3: Start AFI Eliza Gateway (Full Server)
 
 ```bash
-cd afi-eliza-gateway
+cd afi-gateway
 npm run dev:server-full
 # Should start on http://localhost:3000
 ```

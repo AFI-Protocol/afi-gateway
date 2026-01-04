@@ -60,14 +60,14 @@ npm run dev
 
 **AFI Eliza Gateway (agent runtime)**:
 ```bash
-cd /Users/secretservice/AFI_Modular_Repos/afi-eliza-gateway
+cd /Users/secretservice/AFI_Modular_Repos/afi-gateway
 npm run dev
 # Starts ElizaOS runtime with Phoenix, Alpha, and Val Dook characters
 ```
 
 ### 2. Environment Variables
 
-Set in `afi-eliza-gateway/.env`:
+Set in `afi-gateway/.env`:
 ```bash
 AFI_REACTOR_BASE_URL=http://localhost:8080
 WEBHOOK_SHARED_SECRET=demo-secret-123  # Optional, for webhook auth

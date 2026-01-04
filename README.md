@@ -1,8 +1,8 @@
-# afi-eliza-gateway
+# afi-gateway
 
-**AFI ↔ Eliza Gateway**
+**AFI's Universal Gateway**
 
-This repository is the integration gateway between AFI Protocol and ElizaOS (Phoenix). It acts as an external client that calls AFI services over HTTP/WebSocket APIs.
+This repository is AFI's universal gateway for multiple interfaces and integrations. It acts as an external client that calls AFI services over HTTP/WebSocket APIs.
 
 ---
 
@@ -26,7 +26,7 @@ This repository is the integration gateway between AFI Protocol and ElizaOS (Pho
 
 ```
 ┌─────────────────────────────────────┐
-│  afi-eliza-gateway (this repo)      │
+│  afi-gateway (this repo)            │
 │  - Eliza character configs          │
 │  - AFI-specific Eliza plugins       │
 │  - HTTP/WS clients                  │
@@ -43,8 +43,8 @@ This repository is the integration gateway between AFI Protocol and ElizaOS (Pho
 ```
 
 **Dependency Direction**:
-- Eliza gateway (this repo) → **depends on** → AFI services
-- AFI services → **never depend on** → Eliza gateway
+- Gateway (this repo) → **depends on** → AFI services
+- AFI services → **never depend on** → Gateway
 
 ---
 
@@ -196,7 +196,7 @@ When running in **full server mode** (`pnpm dev:server-full`), the gateway provi
 
 ---
 
-## MongoDB (AFI Eliza Gateway)
+## MongoDB (AFI Gateway)
 
 ### Scope
 
@@ -235,7 +235,7 @@ This repository uses MongoDB for **gateway-specific data only**:
 
    Expected output:
    ```
-   🔍 AFI Eliza Gateway — MongoDB Smoke Test
+   🔍 AFI Gateway — MongoDB Smoke Test
    ============================================================
    [1/4] Connecting to MongoDB...
    ✅ Connected to database: afi_eliza
@@ -252,7 +252,7 @@ This repository uses MongoDB for **gateway-specific data only**:
    Collection:   demo_health
    Document ID:  507f1f77bcf86cd799439011
    Created At:   2024-01-15T10:30:00.000Z
-   Note:         AFI Eliza gateway Mongo smoke test
+   Note:         AFI gateway Mongo smoke test
    Version:      0.1.0
    ============================================================
    ✅ SMOKE TEST PASSED
@@ -299,7 +299,7 @@ See **[PRIZE_DEMO.md](./PRIZE_DEMO.md)** for the full demo script.
    # Should start on http://localhost:8080
    ```
 
-2. **Start AFI Eliza Gateway** (agent runtime):
+2. **Start AFI Gateway** (agent runtime):
    ```bash
    cd /Users/secretservice/AFI_Modular_Repos/afi-eliza-gateway
    npm run dev
@@ -362,7 +362,7 @@ See `docs/AFI_SIGNAL_OUTBOX_README.md` for a conceptual view of how these drafts
 ## Directory Structure
 
 ```
-afi-eliza-gateway/
+afi-gateway/
 ├── src/
 │   ├── index.ts                  # Gateway entrypoint (ElizaOS runtime)
 │   ├── phoenix.character.ts      # Phoenix character definition

@@ -1,15 +1,15 @@
 /**
- * AFI Eliza Gateway — HTTP Server Entrypoint
+ * AFI Gateway — HTTP Server Entrypoint
  *
- * This is the production HTTP server for the AFI-Eliza integration gateway.
+ * This is the production HTTP server for AFI Gateway integration.
  *
  * Purpose:
- * - Expose AFI Eliza Gateway as a long-running HTTP service
+ * - Expose AFI Gateway as a long-running HTTP service
  * - Provide health checks and demo endpoints
  * - Designed for Railway deployment (PORT-based, 0.0.0.0 binding)
  *
  * Architecture:
- * - This server is a STATELESS HTTP API wrapper around AFI Eliza Gateway
+ * - This server is a STATELESS HTTP API wrapper around AFI Gateway
  * - It does NOT replace the CLI interface (see src/index.ts for CLI)
  * - It provides REST endpoints for health checks and demos
  *
@@ -71,7 +71,7 @@ app.use((req: Request, res: Response, next) => {
 app.get("/healthz", (req: Request, res: Response) => {
   const health = {
     status: "ok",
-    service: "afi-eliza-gateway",
+    service: "afi-gateway",
     timestamp: new Date().toISOString(),
     version: packageVersion,
     environment: process.env.NODE_ENV || "development",
@@ -91,9 +91,9 @@ app.get("/healthz", (req: Request, res: Response) => {
  */
 app.get("/", (req: Request, res: Response) => {
   const response = {
-    service: "afi-eliza-gateway",
+    service: "afi-gateway",
     version: packageVersion,
-    description: "AFI Eliza Gateway - HTTP API for AFI-Eliza integration",
+    description: "AFI Gateway - HTTP API for AFI integration",
     environment: process.env.NODE_ENV || "development",
     timestamp: new Date().toISOString(),
     routes: [
@@ -117,10 +117,10 @@ app.get("/", (req: Request, res: Response) => {
  */
 app.get("/demo/ping", (req: Request, res: Response) => {
   const response = {
-    message: "AFI Eliza gateway is alive",
+    message: "AFI Gateway is alive",
     version: packageVersion,
     timestamp: new Date().toISOString(),
-    service: "afi-eliza-gateway",
+    service: "afi-gateway",
   };
 
   elizaLogger.debug("Ping requested", response);
@@ -154,7 +154,7 @@ async function startServer() {
 
   try {
     app.listen(port, host, () => {
-      elizaLogger.success("🚀 AFI ELIZA GATEWAY — HTTP SERVER");
+      elizaLogger.success("🚀 AFI GATEWAY — HTTP SERVER");
       elizaLogger.info(`   Listening on http://${host}:${port}`);
       elizaLogger.info(`   Environment: ${process.env.NODE_ENV || "development"}`);
       elizaLogger.info(`   Version: ${packageVersion}`);

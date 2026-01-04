@@ -12,12 +12,12 @@
 ### 1. Services Required
 
 - **afi-reactor** (local or deployed) — AFI signal processing backend
-- **afi-eliza-gateway** (Render or local) — AFI personas + actions
+- **afi-gateway** (Render or local) — AFI personas + actions
 - **ElizaOS web client** (or CLI) — User interface
 
 ### 2. Environment Variables
 
-**afi-eliza-gateway** requires:
+**afi-gateway** requires:
 ```bash
 # Required
 OPENAI_API_KEY=sk-...                    # For LLM (Phoenix, Alpha, etc.)
@@ -65,7 +65,7 @@ curl http://localhost:8080/health
 ### Step 2: Start AFI Eliza Gateway (CLI Mode)
 
 ```bash
-cd /Users/secretservice/AFI_Modular_Repos/afi-eliza-gateway
+cd /Users/secretservice/AFI_Modular_Repos/afi-gateway
 npm run dev
 ```
 
@@ -105,7 +105,7 @@ AFI> /afi eliza-demo
 DISCORD_APPLICATION_ID=your_app_id
 DISCORD_API_TOKEN=your_bot_token
 
-# Restart afi-eliza-gateway
+# Restart afi-gateway
 npm run dev
 ```
 
@@ -153,9 +153,9 @@ AFI> /afi help
 
 ## Production Deployment (Render)
 
-### afi-eliza-gateway on Render
+### afi-gateway on Render
 
-**URL**: https://afi-eliza-gateway.onrender.com
+**URL**: https://afi-gateway.onrender.com
 
 **Status**: ✅ LIVE
 
@@ -190,7 +190,7 @@ NODE_ENV=production
 **Solution**:
 1. Copy `.env.example` to `.env`
 2. Add your OpenAI API key
-3. Restart afi-eliza-gateway
+3. Restart afi-gateway
 
 ### Issue: "MongoDB connection failed"
 

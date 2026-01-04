@@ -7,7 +7,7 @@
 
 ## Summary
 
-Completed a comprehensive audit and refactoring of OpenAI API key configuration in `afi-eliza-gateway` to ensure:
+Completed a comprehensive audit and refactoring of OpenAI API key configuration in `afi-gateway` to ensure:
 - No hardcoded keys anywhere in the codebase
 - Single source of truth for the API key (`process.env.OPENAI_API_KEY`)
 - Centralized validation and configuration
@@ -127,7 +127,7 @@ import { AgentServer } from "@elizaos/server";
 ### 1. Test with Valid Key
 
 ```bash
-cd /Users/secretservice/AFI_Modular_Repos/afi-eliza-gateway
+cd /Users/secretservice/AFI_Modular_Repos/afi-gateway
 
 # Make sure .env has your real OpenAI key
 cat .env | grep OPENAI_API_KEY
@@ -212,7 +212,7 @@ If you're still seeing the wrong key being used:
 2. **Check environment variables**: Run `echo $OPENAI_API_KEY` in your shell
 3. **Restart terminal**: Close and reopen terminal to clear cached env vars
 4. **Check process manager**: Kill any zombie processes that might have old env vars
-5. **Verify .env location**: Make sure `.env` is in `afi-eliza-gateway/` root
+5. **Verify .env location**: Make sure `.env` is in `afi-gateway/` root
 
 The startup logs will now clearly show which key is being used (last 4 chars), making it easy to verify.
 

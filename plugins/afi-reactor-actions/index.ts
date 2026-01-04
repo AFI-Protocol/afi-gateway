@@ -14,7 +14,7 @@
  * - CHECK_AFI_REACTOR_HEALTH: Check if AFI Reactor is online (Phoenix)
  * - EXPLAIN_FROGGY_DECISION: Explain the last Froggy decision (Phoenix)
  *
- * Part of: afi-eliza-gateway integration with afi-reactor
+ * Part of: afi-gateway integration with afi-reactor
  */
 
 import type { Plugin, Action, IAgentRuntime, Memory, State } from "@elizaos/core";

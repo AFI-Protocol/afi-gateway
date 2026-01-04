@@ -98,7 +98,7 @@ Expected response:
 ```json
 {
   "status": "ok",
-  "service": "afi-eliza-gateway",
+  "service": "afi-gateway",
   "timestamp": "2025-12-07T12:34:56.789Z",
   "version": "0.1.0",
   "environment": "production"
