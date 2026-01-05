@@ -8,12 +8,12 @@
 
 ## Overview
 
-This guide explains how afi-eliza-gateway integrates with afi-reactor's Froggy trend-pullback pipeline via HTTP webhooks.
+This guide explains how afi-gateway integrates with afi-reactor's Froggy trend-pullback pipeline via HTTP webhooks.
 
 **Architecture**:
 ```
 ┌─────────────────────────────────────┐
-│  afi-eliza-gateway                  │
+│  afi-gateway                        │
 │  - Alpha Scout (signal submission)  │
 │  - Phoenix Guide (health/explain)   │
 │  - AFI Reactor Actions Plugin       │
@@ -46,15 +46,15 @@ AFI Reactor will start on `http://localhost:8080` with endpoints:
 - `GET /health` - Health check
 - `POST /api/webhooks/tradingview` - Froggy pipeline webhook
 
-### 2. Start Eliza Gateway
+### 2. Start AFI Gateway
 
 ```bash
-cd ../afi-eliza-gateway
+cd ../afi-gateway
 npm run build
 npm run dev
 ```
 
-Eliza Gateway will start with:
+AFI Gateway will start with:
 - Phoenix character (default)
 - Alpha character (available)
 - AFI Reactor Actions Plugin (registered)
@@ -165,7 +165,7 @@ Phoenix: [calls EXPLAIN_LAST_FROGGY_DECISION]
 
 ### Environment Variables
 
-Create a `.env` file in `afi-eliza-gateway`:
+Create a `.env` file in `afi-gateway`:
 
 ```bash
 # Required: OpenAI API key for LLM

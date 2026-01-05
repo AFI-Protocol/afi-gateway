@@ -481,7 +481,7 @@ afi-factory is **not involved** in vault design or implementation. This is expec
 **Implication:** Need to add:
 - Unit tests for `MongoTSSDVaultClient`
 - Integration tests for vault + DAG pipeline
-- Smoke tests for vault operations (similar to afi-eliza-gateway's offline telemetry smoke test)
+- Smoke tests for vault operations (similar to afi-gateway's offline telemetry smoke test)
 
 ---
 

@@ -1,8 +1,8 @@
-# AFI Eliza Gateway — OpenAI Model Configuration
+# AFI Gateway — OpenAI Model Configuration
 
 ## Overview
 
-AFI Eliza Gateway uses OpenAI's API for all agent conversations and intelligence. This document explains how model providers are configured and how to troubleshoot common issues.
+AFI Gateway uses OpenAI's API for all agent conversations and intelligence. This document explains how model providers are configured and how to troubleshoot common issues.
 
 ---
 
@@ -92,7 +92,7 @@ settings: {
 
 The OpenAI models plugin is located at:
 ```
-afi-eliza-gateway/plugins/afi-openai-models/index.ts
+afi-gateway/plugins/afi-openai-models/index.ts
 ```
 
 **Key Functions**:

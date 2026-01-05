@@ -1,7 +1,7 @@
 # AFI Agent Playbook (ElizaOS Runtime) – v0.1
 
-**Status**: v0.1 — initial agent playbook (subject to future revision)  
-**Location**: `afi-eliza-gateway/docs/AFI_AGENT_PLAYBOOK.v0.1.md`  
+**Status**: v0.1 — initial agent playbook (subject to future revision)
+**Location**: `afi-gateway/docs/AFI_AGENT_PLAYBOOK.v0.1.md`
 **Scope**: ElizaOS agents that are AFI-aware (runtime behavior only)
 
 This playbook governs **ElizaOS agents** that interact with AFI Protocol services. It defines how agents should behave when speaking to humans, calling AFI APIs, and representing AFI intelligence in runtime environments (Discord, web, voice, etc.).
@@ -63,7 +63,7 @@ An **ElizaOS character or persona** that:
 
 **Examples**: Phoenix (AFI front-door agent), future mentor agents, validator-facing agents.
 
-### Gateway (`afi-eliza-gateway`)
+### Gateway (`afi-gateway`)
 
 The **AFI-owned integration layer** that:
 - Hosts AFI-specific plugins and client code for ElizaOS.
@@ -115,7 +115,7 @@ All AFI-aware agents MUST follow these non-negotiable rules:
 ### Rule 2: Call, don't clone
 
 AFI-aware behavior must go through:
-- Gateway client code (actions/providers in `afi-eliza-gateway`).
+- Gateway client code (actions/providers in `afi-gateway`).
 - AFI HTTP/WS APIs exposed by AFI services.
 
 Agents MUST NOT:
@@ -484,7 +484,7 @@ This section clarifies how agents and droids relate and coordinate.
 
 **Droid outputs that agents consume**:
 - AFI HTTP/WS APIs (exposed by afi-reactor, afi-core, etc.).
-- Gateway client libraries and plugins (in afi-eliza-gateway).
+- Gateway client libraries and plugins (in afi-gateway).
 - Documentation and schemas.
 
 ### Agents: Speak for the Machine
@@ -578,7 +578,7 @@ Future versions may include:
 ### Core Principles (TL;DR)
 
 1. **AFI is the source of truth** — Call AFI APIs, don't clone AFI logic.
-2. **Gateway is the bridge** — All AFI calls go through afi-eliza-gateway.
+2. **Gateway is the bridge** — All AFI calls go through afi-gateway.
 3. **Separate facts from interpretation** — Mark what comes from AFI vs agent commentary.
 4. **Safety over cleverness** — Admit uncertainty, don't guess.
 5. **No secrets, no keys** — Agents are not secure vaults.
@@ -600,7 +600,7 @@ Before deploying an AFI-aware agent, ensure:
 
 - **For droid behavior**: See `afi-config/codex/governance/droids/AFI_DROID_CHARTER.v0.1.md` and `AFI_DROID_PLAYBOOK.v0.1.md`.
 - **For terminology**: See `afi-config/codex/governance/droids/AFI_DROID_GLOSSARY.md`.
-- **For gateway implementation**: See `afi-eliza-gateway/README.md` and `afi-eliza-gateway/AGENTS.md`.
+- **For gateway implementation**: See `afi-gateway/README.md` and `afi-gateway/AGENTS.md`.
 - **For AFI architecture**: See `afi-reactor/AGENTS.md` and `afi-core/AGENTS.md`.
 
 ---
