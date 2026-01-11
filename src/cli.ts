@@ -2,8 +2,9 @@
 
 /**
  * AFI Gateway CLI
- *
- * Command-line interface for AFI Gateway operations.
+ * 
+ * Command-line interface for the AFI Gateway system.
+ * Provides commands for starting the server, managing agents, and monitoring system status.
  */
 
 import { CliApp } from '@afi/cli-framework';

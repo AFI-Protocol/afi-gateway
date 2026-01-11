@@ -1,4 +1,11 @@
 /**
+ * AFI Gateway Server
+ * 
+ * Main server implementation for the AFI Gateway system.
+ * Handles HTTP API exposure for AFI Gateway.
+ */
+
+/**
  * AFI Gateway — HTTP Server Entrypoint
  *
  * This is the production HTTP server for AFI Gateway integration.
@@ -33,100 +40,8 @@
  * @module server
  */
 
-import express, { Request, Response } from "express";
 import { elizaLogger } from "@elizaos/core";
-import { readFileSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
-
-// ESM-compatible __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Read package.json for version info
-// In compiled code, we're in dist/src/, so go up two levels to reach package.json
-const packageJsonPath = join(__dirname, "..", "..", "package.json");
-let packageVersion = "unknown";
-try {
-  const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
-  packageVersion = packageJson.version || "unknown";
-} catch (err) {
-  elizaLogger.warn("⚠️  Could not read package.json version", String(err));
-}
-
-// Initialize Express app
-const app = express();
-
-// Middleware
-app.use(express.json());
-
-// Request logging middleware
-app.use((req: Request, res: Response, next) => {
-  elizaLogger.info(`${req.method} ${req.path}`);
-  next();
-});
-
-/**
- * GET /healthz
- *
- * Health check endpoint for Railway and monitoring systems.
- *
- * Returns:
- * - 200 OK with JSON status
- * - Always returns 200 even if optional dependencies are missing
- */
-app.get("/healthz", (req: Request, res: Response) => {
-  const health = {
-    status: "ok",
-    service: "afi-gateway",
-    timestamp: new Date().toISOString(),
-    version: packageVersion,
-    environment: process.env.NODE_ENV || "development",
-  };
-
-  elizaLogger.debug("Health check requested", health);
-  res.status(200).json(health);
-});
-
-/**
- * GET /
- *
- * Root endpoint - provides service information and available routes.
- *
- * Returns:
- * - 200 OK with service info and route list
- */
-app.get("/", (req: Request, res: Response) => {
-  const response = {
-    service: "afi-gateway",
-    version: packageVersion,
-    description: "AFI Gateway - Framework for custom character development",
-    environment: process.env.NODE_ENV || "development",
-    timestamp: new Date().toISOString(),
-    routes: [
-      { method: "GET", path: "/", description: "Service information" },
-      { method: "GET", path: "/healthz", description: "Health check" },
-    ],
-    note: "This is the AFI Gateway framework. No pre-built characters are included. Use server-full.ts for full ElizaOS API with custom character support. See docs/CHARACTER_DEVELOPMENT.md for guides.",
-  };
-
-  elizaLogger.debug("Root endpoint requested", response);
-  res.status(200).json(response);
-});
-
-/**
- * 404 handler for unknown routes
- */
-app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    error: "not_found",
-    message: `Route ${req.method} ${req.path} not found`,
-    availableRoutes: [
-      "GET /",
-      "GET /healthz",
-    ],
-  });
-});
+import { buildApp } from "./http/app.js";
 
 /**
  * Start the HTTP server
@@ -138,21 +53,27 @@ async function startServer() {
   const port = Number(process.env.PORT) || 8080;
   const host = "0.0.0.0";
 
+  const { app, apiKeyStore } = buildApp();
+
+  try {
+    await apiKeyStore.ensureIndexes();
+  } catch (err) {
+    elizaLogger.error("❌ Failed to initialize API key store", err);
+    process.exit(1);
+  }
+
   try {
     app.listen(port, host, () => {
       elizaLogger.success("🚀 AFI GATEWAY — HTTP SERVER");
       elizaLogger.info(`   Listening on http://${host}:${port}`);
       elizaLogger.info(`   Environment: ${process.env.NODE_ENV || "development"}`);
-      elizaLogger.info(`   Version: ${packageVersion}`);
       elizaLogger.info("");
       elizaLogger.info("   Available Routes:");
-      elizaLogger.info("     GET  /              — Service info");
       elizaLogger.info("     GET  /healthz       — Health check");
-      elizaLogger.info("");
-      elizaLogger.info("   ⚠️  HTTP-only mode: No CLI interface");
-      elizaLogger.info("   ⚠️  For CLI mode, run: npm run dev");
-      elizaLogger.info("   💡 For custom characters, use: npm run dev:server-full");
-      elizaLogger.info("   📚 See docs/CHARACTER_DEVELOPMENT.md for guides");
+      elizaLogger.info("     POST /api/v1/api-keys           — Create API key (tenant scoped)");
+      elizaLogger.info("     GET  /api/v1/api-keys           — List API keys (tenant scoped)");
+      elizaLogger.info("     POST /api/v1/api-keys/:keyId/revoke — Revoke API key (tenant scoped)");
+      elizaLogger.info("     POST /api/v1/signals            — Ingest signal into TSSD (tenant scoped)");
       elizaLogger.info("");
     });
   } catch (error) {
@@ -168,7 +89,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(1);
   });
 }
-
-// Export app for testing
-export default app;
 

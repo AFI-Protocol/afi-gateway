@@ -78,7 +78,7 @@ describe("AFI Reactor Actions Plugin - Framework Tests", () => {
     );
     expect(action).toBeDefined();
     expect(action?.description).toContain("explain");
-    expect(action?.similes).toContain("Explain the last decision");
+    expect(action?.similes).toContain("Explain last result");
   });
 
   it("should validate SUBMIT_SIGNAL_DRAFT action", async () => {
