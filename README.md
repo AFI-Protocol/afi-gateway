@@ -51,6 +51,16 @@ This repository is AFI's universal gateway framework for building custom charact
 
 ---
 
+## LangChain / LangGraph (gateway only)
+
+`afi-gateway` depends on **ElizaOS** (`@elizaos/core`). Installing gateway dependencies may include **transitive** `langchain`, `@langchain/*`, and `langsmith` packages in lockfiles. Those packages support **gateway/client character UX** only.
+
+**AFI Reactor does not use LangChain or LangGraph** for protocol orchestration. Signal scoring, validation, and minting source of truth remain **`afi-reactor`**, **`afi-core`**, and **`afi-config`** — not this gateway.
+
+See [`afi-docs/ARCHITECTURE_STATUS.md`](../afi-docs/ARCHITECTURE_STATUS.md) for the canonical architecture summary.
+
+---
+
 ## Architecture Principles
 
 1. **AFI is the backend** — This gateway is a client, not the source of truth
