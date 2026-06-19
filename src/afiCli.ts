@@ -76,7 +76,7 @@ export async function handleAfiCliCommand(
  * DISABLED: The /demo/afi-eliza-demo endpoint has been removed from Reactor.
  * Reactor is now scoring-only (no demo endpoints).
  *
- * Use the SUBMIT_FROGGY_DRAFT action instead to submit signals to the scoring pipeline.
+ * Use the SUBMIT_SIGNAL_DRAFT action instead to submit signals to the scoring pipeline.
  */
 async function runAfiElizaDemoFlow(runtime: IAgentRuntime): Promise<string> {
   runtime.logger.warn("[AFI CLI] eliza-demo command is disabled (endpoint removed from Reactor)");
@@ -89,7 +89,7 @@ The /demo/afi-eliza-demo endpoint has been removed from AFI Reactor.
 Reactor is now a **scoring-only pipeline** (ingest → enrich → score → persist).
 
 To submit signals for scoring, use:
-- The SUBMIT_FROGGY_DRAFT action (via Alpha Scout)
+- The SUBMIT_SIGNAL_DRAFT action
 - The /api/webhooks/tradingview endpoint directly
 - The /api/ingest/cpj endpoint for CPJ signals
 

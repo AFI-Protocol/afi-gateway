@@ -1,3 +1,5 @@
+> ⚠️ Historical snapshot. The legacy Froggy demo chain (Alpha Scout → Pixel Rick → Val Dook → Execution Sim) was removed; the reactor is scored-only. Canonical pipeline: afi-reactor/src/config/froggyPipeline.ts.
+
 # Model Provider Fix — TEXT_LARGE Handler
 
 **Date**: 2025-12-08  

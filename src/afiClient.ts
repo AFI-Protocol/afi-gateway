@@ -8,7 +8,7 @@
  * - The /api/webhooks/tradingview endpoint exists
  * - No authentication (or optional shared secret via WEBHOOK_SHARED_SECRET)
  * - No rate limiting
- * - Simulated execution only (no real trading)
+ * - Scoring only (no validator certification, no execution, no real trading)
  * - No tokenomics or emissions logic
  *
  * In production, this would:
@@ -22,7 +22,7 @@
 
 /**
  * TradingView-like signal draft.
- * This is the shape that Alpha Scout agents send to the Froggy pipeline.
+ * This is the shape that signal-source agents send to the Froggy scoring pipeline.
  * Matches the TradingViewAlertPayload interface from afi-reactor.
  */
 export interface TradingViewLikeDraft {

@@ -2,7 +2,7 @@
 
 **ElizaOS ↔ AFI Reactor Integration**
 
-⚠️ **DEV/DEMO ONLY** - No real trading, no emissions, simulated execution only.
+⚠️ **DEV/DEMO ONLY** - No real trading, no emissions.
 
 ---
 
@@ -10,12 +10,14 @@
 
 This guide explains how afi-gateway integrates with afi-reactor's Froggy trend-pullback pipeline via HTTP webhooks.
 
+The reactor is **scored-only**: ingest → enrich → score → persist. It returns a scored signal (`ReactorScoredSignalV1`). Validator certification and execution are **downstream concerns** handled by an external certification layer / consumer-adapter layer — they are NOT reactor stages.
+
 **Architecture**:
 ```
 ┌─────────────────────────────────────┐
 │  afi-gateway                        │
-│  - Alpha Scout (signal submission)  │
-│  - Phoenix Guide (health/explain)   │
+│  - Signal submission (draft → score)│
+│  - Health / explain actions         │
 │  - AFI Reactor Actions Plugin       │
 └──────────────┬──────────────────────┘
                │
@@ -23,11 +25,15 @@ This guide explains how afi-gateway integrates with afi-reactor's Froggy trend-p
                │ HTTP GET /health
                ▼
 ┌─────────────────────────────────────┐
-│  afi-reactor                        │
+│  afi-reactor (scored-only)          │
 │  - Froggy Pipeline (6 stages)       │
-│  - Validator Decision Evaluator     │
-│  - Execution Agent Sim              │
+│  - ingest → enrich → score → persist│
+│  - Returns ReactorScoredSignalV1    │
 └─────────────────────────────────────┘
+               │
+               │ (downstream, NOT reactor stages)
+               ▼
+   Certification layer → Consumer/adapter (execution)
 ```
 
 ---
@@ -55,40 +61,39 @@ npm run dev
 ```
 
 AFI Gateway will start with:
-- Phoenix character (default)
-- Alpha character (available)
+- ElizaOS character(s)
 - AFI Reactor Actions Plugin (registered)
 
 ### 3. Interact with Characters
 
-**Phoenix** (health check):
+**Health check**:
 ```
 User: "Is AFI Reactor online?"
-Phoenix: [calls CHECK_AFI_REACTOR_HEALTH]
-         "Yes, AFI Reactor is online and ready."
+Agent: [calls CHECK_AFI_REACTOR_HEALTH]
+       "Yes, AFI Reactor is online and ready."
 ```
 
-**Alpha** (submit signal):
+**Submit signal**:
 ```
 User: "BTC/USDT 1h: Bullish pullback to 20 EMA. Volume confirms."
-Alpha: [calls SUBMIT_FROGGY_DRAFT]
-       "Froggy approved! Decision: approve, Confidence: 0.78."
+Agent: [calls SUBMIT_SIGNAL_DRAFT]
+       "Scored! UWR score: 0.78."
 ```
 
-**Phoenix** (explain decision):
+**Explain last decision**:
 ```
 User: "What was the last signal result?"
-Phoenix: [calls EXPLAIN_LAST_FROGGY_DECISION]
-         "The last signal was BTC/USDT 1h long. Froggy approved it..."
+Agent: [calls EXPLAIN_LAST_DECISION]
+       "The last signal was BTC/USDT 1h long. The analyst scored it 0.78 UWR..."
 ```
 
 ---
 
 ## Actions
 
-### SUBMIT_FROGGY_DRAFT (Alpha)
+### SUBMIT_SIGNAL_DRAFT
 
-**Purpose**: Submit a trend-pullback signal draft to AFI Reactor's Froggy pipeline.
+**Purpose**: Submit a trend-pullback signal draft to AFI Reactor's Froggy scoring pipeline.
 
 **Endpoint**: `POST http://localhost:8080/api/webhooks/tradingview`
 
@@ -97,7 +102,7 @@ Phoenix: [calls EXPLAIN_LAST_FROGGY_DECISION]
 {
   "symbol": "BTC/USDT",
   "timeframe": "1h",
-  "strategy": "froggy_trend_pullback_v1",
+  "strategy": "trend_pullback_v1",
   "direction": "long",
   "market": "spot",
   "setupSummary": "Bullish pullback to 20 EMA. Volume confirms.",
@@ -112,29 +117,45 @@ Phoenix: [calls EXPLAIN_LAST_FROGGY_DECISION]
 }
 ```
 
-**Response**:
+**Response** (scored signal only — `ReactorScoredSignalV1`):
 ```json
 {
   "signalId": "sig_abc123",
-  "validatorDecision": {
-    "decision": "approve",
-    "uwrConfidence": 0.78,
-    "reasonCodes": ["trend_confirmed", "volume_ok"]
-  },
-  "execution": {
-    "status": "simulated",
-    "type": "buy",
-    "asset": "BTC",
-    "amount": 0.1,
-    "simulatedPrice": 67500,
+  "rawUss": { "...": "canonical USS v1.1 signal" },
+  "lenses": [],
+  "_priceFeedMetadata": {
+    "source": "demo",
     "timestamp": "2025-12-06T12:00:00Z"
+  },
+  "analystScore": {
+    "uwrScore": 0.78,
+    "uwrAxes": {
+      "structure": 0.81,
+      "execution": 0.74,
+      "risk": 0.66,
+      "insight": 0.79
+    }
+  },
+  "scoredAt": "2025-12-06T12:00:00Z",
+  "decayParams": {
+    "halfLifeMinutes": 60,
+    "greeksTemplateId": "trend_pullback_v1"
+  },
+  "meta": {
+    "symbol": "BTC/USDT",
+    "timeframe": "1h",
+    "strategy": "trend_pullback_v1",
+    "direction": "long",
+    "source": "demo"
   }
 }
 ```
 
+> Note: the reactor does **not** return a validator decision or an execution block. UWR scoring is the final reactor step; certification and execution happen downstream.
+
 ---
 
-### CHECK_AFI_REACTOR_HEALTH (Phoenix)
+### CHECK_AFI_REACTOR_HEALTH
 
 **Purpose**: Check if AFI Reactor is online and ready.
 
@@ -151,13 +172,13 @@ Phoenix: [calls EXPLAIN_LAST_FROGGY_DECISION]
 
 ---
 
-### EXPLAIN_LAST_FROGGY_DECISION (Phoenix)
+### EXPLAIN_LAST_DECISION
 
-**Purpose**: Retrieve and explain the last Froggy pipeline decision.
+**Purpose**: Retrieve and explain the last Froggy pipeline result.
 
 **Storage**: In-memory cache (session-scoped, not persisted)
 
-**Response**: Same as SUBMIT_FROGGY_DRAFT response
+**Response**: Same scored-only shape as SUBMIT_SIGNAL_DRAFT response (`ReactorScoredSignalV1`)
 
 ---
 
@@ -186,14 +207,16 @@ WEBHOOK_SHARED_SECRET=your-secret-here
 
 ## Froggy Pipeline Stages
 
-When Alpha submits a signal, it flows through 6 stages in afi-reactor:
+When a signal draft is submitted, it flows through 6 stages in afi-reactor (source of truth: `afi-reactor/src/config/froggyPipeline.ts`). The flow is **ingest → enrich → score → persist**:
 
-1. **Alpha Scout Ingest** - Normalize TradingView-like payload
-2. **Signal Structurer (Pixel Rick)** - Convert to USS (Universal Signal Schema)
-3. **Froggy Enrichment Adapter** - Apply enrichment profile
-4. **Froggy Analyst (trend_pullback_v1)** - Analyze trend-pullback setup
-5. **Validator Decision Evaluator (Val Dook)** - Make approve/reject decision
-6. **Execution Agent Sim** - Simulate execution (no real trading)
+1. **USS Telemetry Deriver** (`uss-telemetry-deriver`, internal) - Extract routing/debug fields from `context.rawUss` into `context.telemetry`
+2. **Froggy Enrichment (Tech + Pattern)** (`froggy-enrichment-tech-pattern`) - Technical indicators + pattern recognition *(parallel branch 1)*
+3. **Froggy Enrichment (Sentiment + News)** (`froggy-enrichment-sentiment-news`) - Sentiment + news enrichment *(parallel branch 2, runs alongside stage 2)*
+4. **Froggy Enrichment Adapter** (`froggy-enrichment-adapter`) - Merge enrichment legos + optional AI/ML (joins both branches)
+5. **Froggy Analyst** (`froggy-analyst`) - Run `trend_pullback_v1` strategy, compute UWR score
+6. **Reactor Scored Signal Vault Write** (`tssd-vault-write`, internal) - Persist scored signal
+
+> **Validator certification and execution are NOT reactor stages.** They were removed from the pipeline and moved downstream: certification lives in an external certification layer, and execution lives in the consumer/adapter layer.
 
 ---
 
@@ -202,7 +225,7 @@ When Alpha submits a signal, it flows through 6 stages in afi-reactor:
 ⚠️ **DEV/DEMO ONLY**:
 - No real trading or order execution
 - No tokenomics or emissions logic
-- Simulated execution only
+- Reactor is scored-only (no validator certification, no execution)
 - No authentication (or optional shared secret only)
 - No rate limiting
 - In-memory session cache (not persisted)
@@ -210,7 +233,6 @@ When Alpha submits a signal, it flows through 6 stages in afi-reactor:
 In production, this would require:
 - Proper authentication (API keys, OAuth)
 - Rate limiting and circuit breaking
-- Real execution integration (with proper risk controls)
 - Persistent storage for signal history
 - Audit logging and compliance
 
@@ -229,20 +251,20 @@ In production, this would require:
 
 ### Action not found
 
-**Error**: `Action SUBMIT_FROGGY_DRAFT not found`
+**Error**: `Action SUBMIT_SIGNAL_DRAFT not found`
 
 **Solution**:
 1. Check plugin is registered in `src/index.ts`
 2. Rebuild: `npm run build`
 3. Restart: `npm run dev`
 
-### No Froggy decision available
+### No decision available
 
-**Error**: `No Froggy decision available. Alpha hasn't submitted any signals yet.`
+**Error**: `No signal result available. No signals have been submitted yet.`
 
 **Solution**:
-1. Submit a signal first using Alpha's SUBMIT_FROGGY_DRAFT action
-2. Then call Phoenix's EXPLAIN_LAST_FROGGY_DECISION action
+1. Submit a signal first using the SUBMIT_SIGNAL_DRAFT action
+2. Then call the EXPLAIN_LAST_DECISION action
 
 ---
 
@@ -251,6 +273,4 @@ In production, this would require:
 - [AFI Reactor HTTP Webhook Server](../../afi-reactor/docs/HTTP_WEBHOOK_SERVER.md)
 - [AFI Reactor Actions Plugin](../plugins/afi-reactor-actions/README.md)
 - [AFI Client](../src/afiClient.ts)
-- [Alpha Character](../src/alpha.character.ts)
-- [Phoenix Character](../src/phoenix.character.ts)
-
+- [Canonical Froggy Pipeline Config](../../afi-reactor/src/config/froggyPipeline.ts)

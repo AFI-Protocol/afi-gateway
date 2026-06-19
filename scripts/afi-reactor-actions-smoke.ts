@@ -29,10 +29,10 @@ const actionNames = afiReactorActionsPlugin.actions?.map((a: Action) => a.name) 
 console.log(`   Actions: ${actionNames.join(", ")}`);
 console.log();
 
-// Test 3: SUBMIT_FROGGY_DRAFT action
-console.log("✅ Test 3: SUBMIT_FROGGY_DRAFT action");
+// Test 3: SUBMIT_SIGNAL_DRAFT action
+console.log("✅ Test 3: SUBMIT_SIGNAL_DRAFT action");
 const submitAction = afiReactorActionsPlugin.actions?.find(
-  (a: Action) => a.name === "SUBMIT_FROGGY_DRAFT"
+  (a: Action) => a.name === "SUBMIT_SIGNAL_DRAFT"
 );
 if (submitAction) {
   console.log(`   Name: ${submitAction.name}`);
@@ -41,7 +41,7 @@ if (submitAction) {
   console.log(`   Has validate: ${!!submitAction.validate}`);
   console.log(`   Has handler: ${!!submitAction.handler}`);
 } else {
-  console.error("   ❌ SUBMIT_FROGGY_DRAFT action not found");
+  console.error("   ❌ SUBMIT_SIGNAL_DRAFT action not found");
 }
 console.log();
 
@@ -61,10 +61,10 @@ if (healthAction) {
 }
 console.log();
 
-// Test 5: EXPLAIN_LAST_FROGGY_DECISION action
-console.log("✅ Test 5: EXPLAIN_LAST_FROGGY_DECISION action");
+// Test 5: EXPLAIN_LAST_DECISION action
+console.log("✅ Test 5: EXPLAIN_LAST_DECISION action");
 const explainAction = afiReactorActionsPlugin.actions?.find(
-  (a: Action) => a.name === "EXPLAIN_LAST_FROGGY_DECISION"
+  (a: Action) => a.name === "EXPLAIN_LAST_DECISION"
 );
 if (explainAction) {
   console.log(`   Name: ${explainAction.name}`);
@@ -73,7 +73,7 @@ if (explainAction) {
   console.log(`   Has validate: ${!!explainAction.validate}`);
   console.log(`   Has handler: ${!!explainAction.handler}`);
 } else {
-  console.error("   ❌ EXPLAIN_LAST_FROGGY_DECISION action not found");
+  console.error("   ❌ EXPLAIN_LAST_DECISION action not found");
 }
 console.log();
 
