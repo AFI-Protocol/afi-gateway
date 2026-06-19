@@ -76,7 +76,7 @@ Agent: [calls CHECK_AFI_REACTOR_HEALTH]
 **Submit signal**:
 ```
 User: "BTC/USDT 1h: Bullish pullback to 20 EMA. Volume confirms."
-Agent: [calls SUBMIT_SIGNAL_DRAFT]
+Agent: [calls SUBMIT_TRADINGVIEW_SIGNAL]
        "Scored! UWR score: 0.78."
 ```
 
@@ -91,7 +91,7 @@ Agent: [calls EXPLAIN_LAST_DECISION]
 
 ## Actions
 
-### SUBMIT_SIGNAL_DRAFT
+### SUBMIT_TRADINGVIEW_SIGNAL
 
 **Purpose**: Submit a trend-pullback signal draft to AFI Reactor's Froggy scoring pipeline.
 
@@ -178,7 +178,7 @@ Agent: [calls EXPLAIN_LAST_DECISION]
 
 **Storage**: In-memory cache (session-scoped, not persisted)
 
-**Response**: Same scored-only shape as SUBMIT_SIGNAL_DRAFT response (`ReactorScoredSignalV1`)
+**Response**: Same scored-only shape as SUBMIT_TRADINGVIEW_SIGNAL response (`ReactorScoredSignalV1`)
 
 ---
 
@@ -251,7 +251,7 @@ In production, this would require:
 
 ### Action not found
 
-**Error**: `Action SUBMIT_SIGNAL_DRAFT not found`
+**Error**: `Action SUBMIT_TRADINGVIEW_SIGNAL not found`
 
 **Solution**:
 1. Check plugin is registered in `src/index.ts`
@@ -263,7 +263,7 @@ In production, this would require:
 **Error**: `No signal result available. No signals have been submitted yet.`
 
 **Solution**:
-1. Submit a signal first using the SUBMIT_SIGNAL_DRAFT action
+1. Submit a signal first using the SUBMIT_TRADINGVIEW_SIGNAL action
 2. Then call the EXPLAIN_LAST_DECISION action
 
 ---

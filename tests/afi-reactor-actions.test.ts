@@ -51,12 +51,12 @@ describe("AFI Reactor Actions Plugin - Framework Tests", () => {
   it("should export plugin with correct structure", () => {
     expect(afiReactorActionsPlugin).toBeDefined();
     expect(afiReactorActionsPlugin.name).toBe("@afi/plugin-afi-reactor-actions");
-    expect(afiReactorActionsPlugin.actions).toHaveLength(4); // 4 actions: SUBMIT_SIGNAL_DRAFT, CHECK_AFI_REACTOR_HEALTH, EXPLAIN_LAST_DECISION, DESCRIBE_ENRICHMENT_LAYERS
+    expect(afiReactorActionsPlugin.actions).toHaveLength(4); // 4 actions: SUBMIT_TRADINGVIEW_SIGNAL, CHECK_AFI_REACTOR_HEALTH, EXPLAIN_LAST_DECISION, DESCRIBE_ENRICHMENT_LAYERS
   });
 
-  it("should have SUBMIT_SIGNAL_DRAFT action", () => {
+  it("should have SUBMIT_TRADINGVIEW_SIGNAL action", () => {
     const action = afiReactorActionsPlugin.actions?.find(
-      (a: any) => a.name === "SUBMIT_SIGNAL_DRAFT"
+      (a: any) => a.name === "SUBMIT_TRADINGVIEW_SIGNAL"
     );
     expect(action).toBeDefined();
     expect(action?.description).toContain("signal");
@@ -81,9 +81,9 @@ describe("AFI Reactor Actions Plugin - Framework Tests", () => {
     expect(action?.similes).toContain("Explain last result");
   });
 
-  it("should validate SUBMIT_SIGNAL_DRAFT action", async () => {
+  it("should validate SUBMIT_TRADINGVIEW_SIGNAL action", async () => {
     const action = afiReactorActionsPlugin.actions?.find(
-      (a: any) => a.name === "SUBMIT_SIGNAL_DRAFT"
+      (a: any) => a.name === "SUBMIT_TRADINGVIEW_SIGNAL"
     );
     const runtime = createMockRuntime();
     const message = createMockMessage("BTC/USDT 1h long");

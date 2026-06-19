@@ -29,10 +29,10 @@ const actionNames = afiReactorActionsPlugin.actions?.map((a: Action) => a.name) 
 console.log(`   Actions: ${actionNames.join(", ")}`);
 console.log();
 
-// Test 3: SUBMIT_SIGNAL_DRAFT action
-console.log("✅ Test 3: SUBMIT_SIGNAL_DRAFT action");
+// Test 3: SUBMIT_TRADINGVIEW_SIGNAL action
+console.log("✅ Test 3: SUBMIT_TRADINGVIEW_SIGNAL action");
 const submitAction = afiReactorActionsPlugin.actions?.find(
-  (a: Action) => a.name === "SUBMIT_SIGNAL_DRAFT"
+  (a: Action) => a.name === "SUBMIT_TRADINGVIEW_SIGNAL"
 );
 if (submitAction) {
   console.log(`   Name: ${submitAction.name}`);
@@ -41,7 +41,7 @@ if (submitAction) {
   console.log(`   Has validate: ${!!submitAction.validate}`);
   console.log(`   Has handler: ${!!submitAction.handler}`);
 } else {
-  console.error("   ❌ SUBMIT_SIGNAL_DRAFT action not found");
+  console.error("   ❌ SUBMIT_TRADINGVIEW_SIGNAL action not found");
 }
 console.log();
 

@@ -25,7 +25,7 @@
  * This is the shape that signal-source agents send to the Froggy scoring pipeline.
  * Matches the TradingViewAlertPayload interface from afi-reactor.
  */
-export interface TradingViewLikeDraft {
+export interface TradingViewWebhookPayload {
   symbol: string;
   timeframe: string;
   strategy: string;
@@ -115,7 +115,7 @@ export function getAfiReactorBaseUrl(): string {
  * @throws Error if the request fails or returns non-2xx status
  */
 export async function runFroggyTrendPullback(
-  draft: TradingViewLikeDraft
+  draft: TradingViewWebhookPayload
 ): Promise<ReactorScoredSignalV1> {
   const baseUrl = getAfiReactorBaseUrl();
   const endpoint = `${baseUrl}/api/webhooks/tradingview`;

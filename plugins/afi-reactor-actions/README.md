@@ -19,7 +19,7 @@ It enables ElizaOS characters to:
 
 ## Actions
 
-### 1. SUBMIT_SIGNAL_DRAFT
+### 1. SUBMIT_TRADINGVIEW_SIGNAL
 
 **Purpose**: Submit a trend-pullback signal draft to AFI Reactor's Froggy scoring pipeline.
 
@@ -79,7 +79,7 @@ It enables ElizaOS characters to:
 ```
 User: "BTC/USDT 1h: Bullish pullback to 20 EMA. Swept liquidity below $67.2k, now bouncing with volume."
 
-Agent: [calls SUBMIT_SIGNAL_DRAFT action]
+Agent: [calls SUBMIT_TRADINGVIEW_SIGNAL action]
        "Scored! UWR score: 0.78 (structure 0.81, execution 0.74, risk 0.66, insight 0.79)."
 ```
 
@@ -124,7 +124,7 @@ Agent: [calls CHECK_AFI_REACTOR_HEALTH action]
 ```typescript
 {
   success: boolean;
-  data?: ReactorScoredSignalV1; // Same scored-only shape as SUBMIT_SIGNAL_DRAFT output
+  data?: ReactorScoredSignalV1; // Same scored-only shape as SUBMIT_TRADINGVIEW_SIGNAL output
   error?: string;
 }
 ```

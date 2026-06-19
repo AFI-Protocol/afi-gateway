@@ -183,7 +183,7 @@ Characters can access AFI services through plugins:
 
 ```typescript
 // Character can submit signal drafts to AFI Reactor
-// Action: SUBMIT_SIGNAL_DRAFT
+// Action: SUBMIT_TRADINGVIEW_SIGNAL
 // Plugin: @afi/plugin-afi-reactor-actions
 ```
 

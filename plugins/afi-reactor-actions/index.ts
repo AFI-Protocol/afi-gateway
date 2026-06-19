@@ -5,7 +5,7 @@
  * These actions can be used by any custom character built with this framework.
  *
  * Actions provided:
- * - SUBMIT_SIGNAL_DRAFT: Submit a signal draft to AFI scoring pipeline
+ * - SUBMIT_TRADINGVIEW_SIGNAL: Submit a signal draft to AFI scoring pipeline
  * - CHECK_AFI_REACTOR_HEALTH: Check if AFI Reactor is online
  * - EXPLAIN_LAST_DECISION: Explain last signal decision
  * - DESCRIBE_ENRICHMENT_LAYERS: Explain enrichment legos and modular enrichment economy
@@ -18,7 +18,7 @@ import {
   runFroggyTrendPullback,
   checkAfiReactorHealth,
   getAfiReactorBaseUrl,
-  type TradingViewLikeDraft,
+  type TradingViewWebhookPayload,
   type ReactorScoredSignalV1,
   type HealthCheckResponse,
 } from "../../src/afiClient.js";
@@ -35,7 +35,7 @@ let lastSignalResult: ReactorScoredSignalV1 | null = null;
  * Allows agents to submit a signal draft to AFI scoring pipeline.
  */
 const submitSignalDraftAction: Action = {
-  name: "SUBMIT_SIGNAL_DRAFT",
+  name: "SUBMIT_TRADINGVIEW_SIGNAL",
   description:
     "Submit a signal draft to AFI Reactor's scoring pipeline. Returns scored signal with analystScore, scoredAt, decayParams. This action can be used by any custom character.",
   similes: [
@@ -55,7 +55,7 @@ const submitSignalDraftAction: Action = {
       {
         name: "Agent",
         content: {
-          text: "Submitting to scoring pipeline... [calls SUBMIT_SIGNAL_DRAFT action]",
+          text: "Submitting to scoring pipeline... [calls SUBMIT_TRADINGVIEW_SIGNAL action]",
         },
       },
     ],
@@ -73,7 +73,7 @@ const submitSignalDraftAction: Action = {
   ) => {
     try {
       // Extract draft from options or message content
-      const draft: TradingViewLikeDraft = options?.draft || {
+      const draft: TradingViewWebhookPayload = options?.draft || {
         symbol: options?.symbol || "BTC/USDT",
         timeframe: options?.timeframe || "1h",
         strategy: options?.strategy || "trend_pullback_v1",
@@ -84,7 +84,7 @@ const submitSignalDraftAction: Action = {
         enrichmentProfile: options?.enrichmentProfile,
       };
 
-      runtime.logger.info(`[SUBMIT_SIGNAL_DRAFT] Submitting draft: ${JSON.stringify(draft)}`);
+      runtime.logger.info(`[SUBMIT_TRADINGVIEW_SIGNAL] Submitting draft: ${JSON.stringify(draft)}`);
 
       // Submit signal draft to AFI Reactor scoring pipeline
       // Note: runFroggyTrendPullback is a specific strategy implementation
@@ -95,7 +95,7 @@ const submitSignalDraftAction: Action = {
       lastSignalResult = result;
 
       runtime.logger.info(
-        `[SUBMIT_SIGNAL_DRAFT] Result: signalId=${result.signalId}, uwrScore=${result.analystScore.uwrScore}`
+        `[SUBMIT_TRADINGVIEW_SIGNAL] Result: signalId=${result.signalId}, uwrScore=${result.analystScore.uwrScore}`
       );
 
       return {
@@ -103,7 +103,7 @@ const submitSignalDraftAction: Action = {
         data: result,
       };
     } catch (error) {
-      runtime.logger.error(`[SUBMIT_SIGNAL_DRAFT] Error: ${String(error)}`);
+      runtime.logger.error(`[SUBMIT_TRADINGVIEW_SIGNAL] Error: ${String(error)}`);
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),

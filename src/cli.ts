@@ -40,29 +40,11 @@ const cli = new AfiGatewayCli();
 
 // Add commands
 cli
-  .command('eliza-demo')
-  .description('Run AFI Eliza Demo pipeline')
-  .action(async () => {
-    const runtime = await cli.getRuntime();
-    const result = await handleAfiCliCommand('eliza-demo', runtime);
-    console.log(result);
-  });
-
-cli
   .command('reactor <subcommand>')
   .description('AFI Reactor operations')
   .action(async (subcommand: string) => {
     const runtime = await cli.getRuntime();
     const result = await handleAfiCliCommand(`reactor ${subcommand}`, runtime);
-    console.log(result);
-  });
-
-cli
-  .command('validator <subcommand>')
-  .description('Validator operations')
-  .action(async (subcommand: string) => {
-    const runtime = await cli.getRuntime();
-    const result = await handleAfiCliCommand(`validator ${subcommand}`, runtime);
     console.log(result);
   });
 
