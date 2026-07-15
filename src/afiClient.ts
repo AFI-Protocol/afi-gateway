@@ -125,16 +125,19 @@ export async function runFroggyTrendPullback(
       "Content-Type": "application/json",
     };
 
-    // Optional: Add shared secret authentication if configured
+    // The Reactor reads the shared secret from the request BODY (`secret`), not
+    // from a header. Sending it as a header meant every authenticated call was
+    // rejected with 401.
     const sharedSecret = process.env.WEBHOOK_SHARED_SECRET;
+    const body: Record<string, unknown> = { ...draft };
     if (sharedSecret) {
-      headers["x-webhook-secret"] = sharedSecret;
+      body.secret = sharedSecret;
     }
 
     const response = await fetch(endpoint, {
       method: "POST",
       headers,
-      body: JSON.stringify(draft),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {

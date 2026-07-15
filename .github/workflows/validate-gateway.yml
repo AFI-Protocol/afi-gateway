@@ -1,0 +1,175 @@
+name: AFI Gateway Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate AFI Gateway
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      # afi-reactor is a CI FIXTURE for the cross-repository boundary proof, not
+      # a dependency of the gateway. Pinned to the reviewed merged commit that
+      # completed Slot 3 (MONGO-REACTOR-SUBMIT + the UWR stamp follow-up) so the
+      # proof is reproducible; bump deliberately, never automatically.
+      REACTOR_REF: 5275ffab05f3787ce6305b575955d6d0c290d811
+
+    steps:
+      - name: Checkout afi-gateway
+        uses: actions/checkout@v4
+        with:
+          path: afi-gateway
+
+      - name: Checkout afi-cli-framework (sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AFI-Protocol/afi-cli-framework
+          path: afi-cli-framework
+
+      # --- Fixtures for the cross-repository boundary proof only ---
+      - name: Checkout afi-reactor (boundary proof fixture)
+        uses: actions/checkout@v4
+        with:
+          repository: AFI-Protocol/afi-reactor
+          ref: ${{ env.REACTOR_REF }}
+          path: afi-reactor
+
+      - name: Checkout afi-core (afi-reactor dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AFI-Protocol/afi-core
+          path: afi-core
+
+      - name: Checkout afi-factory (afi-reactor dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AFI-Protocol/afi-factory
+          path: afi-factory
+
+      - name: Checkout afi-math (afi-reactor dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AFI-Protocol/afi-math
+          path: afi-math
+
+      - name: Checkout afi-config (afi-reactor dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AFI-Protocol/afi-config
+          path: afi-config
+
+      - name: Setup Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: afi-gateway/package-lock.json
+
+      # ================= GATEWAY (the repo under review) =================
+
+      # @afi/cli-framework is a file:../afi-cli-framework dependency, so the
+      # gateway's `npm ci` triggers its `prepare` (tsc build). On a bare checkout
+      # it has no node_modules, so that hook's `tsc` would not resolve. Install
+      # its own locked toolchain first (mirrors afi-reactor's CI).
+      - name: Install and build afi-cli-framework
+        working-directory: afi-cli-framework
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install afi-gateway dependencies
+        working-directory: afi-gateway
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: afi-gateway
+        run: npm run typecheck
+
+      - name: Build
+        working-directory: afi-gateway
+        run: npm run build
+
+      # The boundary guardrail runs inside `npm test`, but is also run alone so a
+      # failure names the invariant that broke rather than hiding in the suite.
+      - name: Boundary guardrail (no canonical evidence writer)
+        working-directory: afi-gateway
+        run: npm run test:guardrail
+
+      - name: Unit tests
+        working-directory: afi-gateway
+        run: npm test
+
+      # ============ CROSS-REPOSITORY REAL-MONGODB BOUNDARY PROOF ============
+      # Everything below exists to prove ONE claim end to end: a valid Gateway
+      # submission reaches the Reactor and results in exactly one canonical
+      # stamped evidence record in a REAL MongoDB — written by the Reactor
+      # through afi-infra, never by the Gateway.
+
+      - name: Configure git to fetch GitHub dependencies over HTTPS
+        run: |
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      # afi-reactor consumes these as file: dependencies, so its `npm ci`
+      # triggers their `prepare` hooks; install their own locked toolchains
+      # first so those hooks build cleanly (mirrors afi-reactor's own CI).
+      - name: Install and build afi-core
+        working-directory: afi-core
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install and build afi-config
+        working-directory: afi-config
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install and build afi-reactor (proof fixture)
+        working-directory: afi-reactor
+        run: |
+          mkdir -p tmp codex
+          npm ci
+          npm run build
+
+      - name: Start MongoDB (single-node replica set)
+        run: |
+          echo "🍃 Starting MongoDB replica set rs0..."
+          docker run -d --name afi-mongo -p 27017:27017 mongo:7 --replSet rs0 --bind_ip_all
+          echo "⏳ Waiting for mongod to accept connections..."
+          for i in $(seq 1 60); do
+            if docker exec afi-mongo mongosh --quiet --eval 'db.runCommand({ ping: 1 })' >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          echo "⚙️  Initiating replica set..."
+          docker exec afi-mongo mongosh --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"127.0.0.1:27017"}]})'
+          echo "⏳ Waiting for PRIMARY..."
+          for i in $(seq 1 60); do
+            if docker exec afi-mongo mongosh --quiet --eval 'db.hello().isWritablePrimary' 2>/dev/null | grep -q true; then
+              echo "✅ Replica set PRIMARY ready"; break
+            fi
+            sleep 2
+          done
+
+      # The proof spawns the REAL compiled reactor itself (including a variant
+      # whose UWR resolution fails), so every failure mode is exercised against
+      # a real process rather than a stub.
+      - name: Gateway → Reactor → afi-infra → real-MongoDB boundary proof
+        working-directory: afi-gateway
+        timeout-minutes: 15
+        env:
+          MONGODB_URI: mongodb://127.0.0.1:27017/?replicaSet=rs0
+          AFI_MONGO_DB_NAME: afi_eliza_it
+          AFI_EVIDENCE_DB_NAME: afi_gateway_boundary_it
+          AFI_REACTOR_DIR: ${{ github.workspace }}/afi-reactor
+        run: npm run test:integration:boundary
+
+      - name: Stop MongoDB
+        if: always()
+        run: docker rm -f afi-mongo || true
