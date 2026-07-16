@@ -75,13 +75,10 @@ async function main() {
     const port = env.PORT;
     const dataDir = process.env.DATA_DIR || "./data/afi-eliza";
 
-    // Initialize server with data directory
-    elizaLogger.info("🔧 Initializing server...");
-    await server.initialize({ dataDir });
-
-    // Start HTTP server
-    elizaLogger.info("🚀 Starting HTTP server...");
-    await server.start(port);
+    // AgentServer.start() performs initialization and port resolution in one
+    // call; initialize() is private in @elizaos/server.
+    elizaLogger.info("🚀 Initializing and starting HTTP server...");
+    await server.start({ port, dataDir });
 
     // Start custom agents
     // Import your character files and start them here:
