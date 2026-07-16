@@ -171,7 +171,7 @@ afi-infra is the **canonical home** for TSSD Vault types and interfaces. The des
 - **Deployment Documentation:**
   - `docs/RUNBOOK_LOCAL_DEV.md` (296 lines) - Local development runbook
     - Mentions MongoDB requirement: `docker run -d -p 27017:27017 --name afi-mongo mongo:7`
-    - Service startup order: afi-infra → afi-plugins → afi-reactor → afi-core
+    - Service startup order: afi-infra → afi-reactor → afi-core
     - Notes T.S.S.D. Vault as part of afi-infra initialization
   - `docs/SLO_OVERVIEW.md` - Service level objectives
   - `docs/OPS_CHECKLISTS.md` - Operational checklists
@@ -219,7 +219,7 @@ afi-ops acknowledges MongoDB and TSSD Vault but has **no operational tooling** f
 - **Codex:**
   - `.afi-codex.json` (58 lines) - Config schema library
     - Provides: `vaultSchema`, `configSchemas`, `validationUtilities`
-    - Consumers: afi-core, afi-reactor, afi-infra, afi-plugins, afi-ops, afi-token
+    - Consumers: afi-core, afi-reactor, afi-infra, afi-ops, afi-token
 
 **What's Missing:**
 
