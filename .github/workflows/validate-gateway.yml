@@ -26,11 +26,15 @@ jobs:
         with:
           path: afi-gateway
 
+      # afi-cli-framework is a public AFI repo, cloned anonymously over HTTPS.
+      # No deploy key, PAT or Actions secret is involved, and no credential is
+      # persisted into the checkout's git config.
       - name: Checkout afi-cli-framework (sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AFI-Protocol/afi-cli-framework
           path: afi-cli-framework
+          persist-credentials: false
 
       # --- Fixtures for the cross-repository boundary proof only ---
       - name: Checkout afi-reactor (boundary proof fixture)
