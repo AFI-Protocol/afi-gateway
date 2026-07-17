@@ -89,9 +89,7 @@ Capabilities implemented as **Eliza actions, providers, evaluators, or services*
 - May orchestrate non-AFI data sources (news, markets, social sentiment).
 - MUST NOT reimplement AFI scoring, DAG logic, or tokenomics in runtime code.
 
-**Contrast with AFI Skills (repo land)**:
-- **AFI Skills** (in `afi-skills` repo): Canonical, testable capabilities encoded as config/templates/code modules.
-- **Runtime Skills** (agent side): Behaviors exposed via Eliza plugins that call AFI services.
+**Runtime Skills** (agent side): behaviors exposed via Eliza plugins that call AFI services (distinct from pipeline-authoring artifacts, which are not loaded or executed in the agent runtime).
 
 ---
 

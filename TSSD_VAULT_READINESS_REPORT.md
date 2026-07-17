@@ -233,35 +233,6 @@ afi-config provides **governance** for vault configuration but no **implementati
 
 ---
 
-### 2.6 afi-skills
-
-**What Exists:**
-
-- **Vault Replay Skill:**
-  - `skills/provenance/vault-replay-determinism.md` (183 lines) - **Comprehensive skill definition:**
-    - Purpose: Verify deterministic replay of historical epochs
-    - Inputs: epoch_id, original_outputs, replay_config
-    - Outputs: determinism_result, diff_report
-    - Allowed tools: `codex:replay`, `tssd:read`
-    - Risk level: medium, determinism_required: true
-    - Golden cases: `evals/provenance/vault-replay-determinism/golden_cases.json`
-
-- **Codex:**
-  - `.afi-codex.json` (32 lines) - Skill library
-    - Provides: agent-skills, skill-library, skill-schemas
-    - Consumers: afi-core, afi-reactor, afi-factory
-
-**What's Missing:**
-
-- No implementation of vault-replay-determinism skill (only spec)
-- No other vault-related skills (e.g., vault-query, vault-audit, vault-export)
-
-**Implications:**
-
-afi-skills defines **provenance and replay requirements** for the vault but has **no implementations**. The skill spec assumes `tssd:read` tool exists (it doesn't yet).
-
----
-
 ### 2.7 afi-token
 
 **What Exists:**
@@ -544,7 +515,7 @@ afi-factory is **not involved** in vault design or implementation. This is expec
 - **Possible interpretations**:
   - **Re-execute pipeline**: Re-run RAW → ENRICHED → ANALYZED → SCORED with same inputs
   - **Outcome evaluation**: Compare predicted vs. actual outcomes (REPLAYED stage)
-  - **Determinism check**: Verify bit-for-bit identical results (afi-skills vault-replay-determinism)
+  - **Determinism check**: Verify bit-for-bit identical results
 - **Recommendation**: Support **all three** with different replay modes:
   - `replay --mode=re-execute` - Re-run pipeline
   - `replay --mode=evaluate` - Compare outcomes
@@ -721,10 +692,6 @@ afi-factory is **not involved** in vault design or implementation. This is expec
 **afi-config** (2 files):
 - `.afi-codex.json`
 - `schemas/vault.schema.json`
-
-**afi-skills** (2 files):
-- `.afi-codex.json`
-- `skills/provenance/vault-replay-determinism.md`
 
 **afi-token** (3 files):
 - `.afi-codex.json`
