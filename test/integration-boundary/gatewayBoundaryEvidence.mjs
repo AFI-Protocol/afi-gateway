@@ -52,7 +52,7 @@ if (!REACTOR_DIR) {
 const EVIDENCE_DB = process.env.AFI_EVIDENCE_DB_NAME ?? "afi_gateway_boundary_it";
 const OPERATIONAL_DB = process.env.AFI_MONGO_DB_NAME ?? "afi_eliza_it";
 const EVIDENCE_COLLECTION = "scored_signal_evidence";
-const EVIDENCE_SCHEMA = "afi.scored-signal-evidence.v1";
+const EVIDENCE_SCHEMA = "afi.scored-signal-evidence.v2";
 const SHARED_SECRET = "boundary-it-shared-secret";
 
 const GOOD_PORT = 18080;
@@ -181,7 +181,13 @@ async function main() {
   }
   assert.equal(record.provenanceRecord.schema, "afi.provenance-record.v1");
   assert.ok(record.provenanceRecord.inputHash, "reactor-computed canonical input hash");
-  ok("P2 evidence constructed by the reactor (UWR stamp + scores + axes + hashes the gateway never had)");
+  // The v2 composition reference is decisive too: the gateway has no pipeline
+  // manifest, no canonical hasher, and no registry — a composition reference
+  // can only have been constructed by the reactor's configured executor.
+  assert.equal(record.composition.schema, "afi.composition-ref.v1", "v2 composition reference present");
+  assert.equal(record.composition.pipelineId, "froggy-trend-pullback", "resolved pipeline identity");
+  assert.ok(record.composition.manifestHash, "canonical manifest hash the gateway never computed");
+  ok("P2 evidence constructed by the reactor (UWR stamp + scores + axes + hashes + v2 composition ref the gateway never had)");
 
   // ---- P3: provenance is authenticated by the gateway, not fabricated ----
   assert.equal(
