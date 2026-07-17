@@ -8,6 +8,42 @@ This repository is AFI's universal gateway framework for building custom charact
 
 ---
 
+## AFI Gateway ingress boundary and reference-service role
+
+This repository is the open-source **AFI Gateway** — AFI's structured-signal
+**submission boundary**. Its ingress server (`start:minimal`, `src/http/app.ts`)
+exposes `POST /api/v1/signals`, which authenticates the API key, resolves the
+tenant, rate-limits per key, performs a **presence-only** field check, stamps
+provenance (`providerId = gateway:<tenantId>`), forwards the payload to the
+Reactor, and returns the Reactor's answer verbatim.
+
+- **Routes, never writes.** The Gateway never constructs or writes canonical
+  evidence — an executable guardrail (`tests/guardrails/no-canonical-evidence-writer.test.ts`)
+  and a real-MongoDB boundary proof enforce this in CI. It is **not** the
+  canonical evidence writer (`afi-infra` is) and **not** the API Atlas.
+- **Conform or adapt.** Structured sources must conform to the supported request
+  contract (the required-present fields, with additional fields forwarded
+  verbatim to the Reactor) or use an adapter. Arbitrary webhook JSON is not a
+  universal accepted format.
+
+**AFI Research Institute is designated to operate the official hosted Gateway
+reference instance** (see [`AFI-GOV-AUTHORITY-INSTITUTE-REFERENCE-SERVICES-v0.1` (INST-GOV)](https://github.com/AFI-Protocol/afi-governance/blob/main/decisions/research-institute-reference-services-v0.1.md)
+and the [reference-services spec](https://github.com/AFI-Protocol/afi-docs/blob/main/specs/AFI_RESEARCH_INSTITUTE_REFERENCE_SERVICES.v0.1.md)).
+This designation is **non-exclusive**:
+
+- the MIT-licensed implementation here remains usable by **independent conforming
+  operators**, who may run it or a conforming re-implementation of the same
+  boundary;
+- any Institute hosted-instance policies (onboarding, quotas, tenant isolation,
+  retention) apply **only** to that hosted instance and are not protocol law;
+- **no Institute-hosted deployment is claimed** — none exists; the Gateway is
+  implemented and CI-proven, not deployed.
+
+This repository stays generic AFI Gateway code: it carries no Institute-specific
+package name and no hardcoded Institute tenant identity.
+
+---
+
 ## What This Repo Contains
 
 - **Framework for custom characters** — Build your own characters with skills
