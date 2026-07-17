@@ -27,16 +27,6 @@ jobs:
         with:
           path: afi-gateway
 
-      # afi-cli-framework is a public AFI repo, cloned anonymously over HTTPS.
-      # No deploy key, PAT or Actions secret is involved, and no credential is
-      # persisted into the checkout's git config.
-      - name: Checkout afi-cli-framework (sibling dependency)
-        uses: actions/checkout@v4
-        with:
-          repository: AFI-Protocol/afi-cli-framework
-          path: afi-cli-framework
-          persist-credentials: false
-
       # --- Fixtures for the cross-repository boundary proof only ---
       - name: Checkout afi-reactor (boundary proof fixture)
         uses: actions/checkout@v4
@@ -71,16 +61,6 @@ jobs:
           cache-dependency-path: afi-gateway/package-lock.json
 
       # ================= GATEWAY (the repo under review) =================
-
-      # @afi/cli-framework is a file:../afi-cli-framework dependency, so the
-      # gateway's `npm ci` triggers its `prepare` (tsc build). On a bare checkout
-      # it has no node_modules, so that hook's `tsc` would not resolve. Install
-      # its own locked toolchain first (mirrors afi-reactor's CI).
-      - name: Install and build afi-cli-framework
-        working-directory: afi-cli-framework
-        run: |
-          npm ci
-          npm run build
 
       - name: Install afi-gateway dependencies
         working-directory: afi-gateway
