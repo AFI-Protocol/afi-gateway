@@ -45,7 +45,7 @@ This is NOT:
 **Out of scope**:
 - How droids edit AFI repos (see Droid Playbook).
 - Smart contract behavior or on-chain logic (see afi-token docs).
-- Infrastructure deployment (see afi-ops).
+- Infrastructure deployment (see afi-infra).
 
 ---
 

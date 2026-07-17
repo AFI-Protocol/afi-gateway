@@ -164,46 +164,7 @@ afi-infra is the **canonical home** for TSSD Vault types and interfaces. The des
 
 ---
 
-### 2.4 afi-ops
-
-**What Exists:**
-
-- **Deployment Documentation:**
-  - `docs/RUNBOOK_LOCAL_DEV.md` (296 lines) - Local development runbook
-    - Mentions MongoDB requirement: `docker run -d -p 27017:27017 --name afi-mongo mongo:7`
-    - Service startup order: afi-infra → afi-reactor → afi-core
-    - Notes T.S.S.D. Vault as part of afi-infra initialization
-  - `docs/SLO_OVERVIEW.md` - Service level objectives
-  - `docs/OPS_CHECKLISTS.md` - Operational checklists
-
-- **Environment Variables:**
-  - `.env.example` (4 lines):
-    ```
-    AFI_ENV=local
-    DB_URI=mongodb://localhost:27017/afi
-    AGENT_KEY=your-agent-key-here
-    ```
-
-- **Codex:**
-  - `.afi-codex.json` (131 lines) - Operations toolkit
-    - Lists MongoDB as external dependency (port 27017, required: true)
-    - Managed services: afi-core (port 3000), afi-reactor (port 3001), afi-infra (no port)
-    - Phase 1 constraints: scaffolding only, no real infra calls
-
-**What's Missing:**
-
-- No migration scripts for TSSD Vault schema
-- No database seeding or cleanup scripts
-- No smoke tests for vault operations
-- No CI/CD integration for vault deployment
-
-**Implications:**
-
-afi-ops acknowledges MongoDB and TSSD Vault but has **no operational tooling** for vault management yet. This is expected for Phase 1 scaffolding.
-
----
-
-### 2.5 afi-config
+### 2.4 afi-config
 
 **What Exists:**
 
@@ -219,7 +180,7 @@ afi-ops acknowledges MongoDB and TSSD Vault but has **no operational tooling** f
 - **Codex:**
   - `.afi-codex.json` (58 lines) - Config schema library
     - Provides: `vaultSchema`, `configSchemas`, `validationUtilities`
-    - Consumers: afi-core, afi-reactor, afi-infra, afi-ops, afi-token
+    - Consumers: afi-core, afi-reactor, afi-infra, afi-token
 
 **What's Missing:**
 
@@ -233,7 +194,7 @@ afi-config provides **governance** for vault configuration but no **implementati
 
 ---
 
-### 2.7 afi-token
+### 2.5 afi-token
 
 **What Exists:**
 
@@ -258,7 +219,7 @@ afi-token uses `signalId` and `epochId` as **breadcrumbs** to link on-chain rece
 
 ---
 
-### 2.8 afi-factory
+### 2.6 afi-factory
 
 **What Exists:**
 
@@ -300,7 +261,6 @@ afi-factory is **not involved** in vault design or implementation. This is expec
 |----------|-------|---------|-------|
 | `MONGODB_URI` | afi-core, afi-reactor | `mongodb://localhost:27017` | MongoDB connection string |
 | `MONGO_URI` | afi-reactor | `mongodb://localhost:27017` | Alternate MongoDB connection string |
-| `DB_URI` | afi-ops | `mongodb://localhost:27017/afi` | Generic database URI |
 
 **Issues:**
 - **Inconsistent naming**: `MONGODB_URI` vs `MONGO_URI` vs `DB_URI`
@@ -429,7 +389,7 @@ afi-factory is **not involved** in vault design or implementation. This is expec
 - **No Kubernetes** (yet)
 - **Local development only** (Phase 1 scaffolding)
 
-**Future State (Implied by afi-ops docs):**
+**Future State:**
 - **Service-oriented**: afi-core, afi-reactor, afi-infra as separate services
 - **MongoDB as external dependency** (port 27017)
 - **No mention of vault as standalone service** (likely embedded in afi-infra or afi-reactor)
@@ -685,10 +645,6 @@ afi-factory is **not involved** in vault design or implementation. This is expec
 - `docs/TSSD_VAULT_SPEC.md`
 - `src/tssd/types.ts`, `src/tssd/TSSDVaultClient.ts`, `src/tssd/index.ts`
 
-**afi-ops** (3 files):
-- `.afi-codex.json`, `.env.example`
-- `docs/RUNBOOK_LOCAL_DEV.md`
-
 **afi-config** (2 files):
 - `.afi-codex.json`
 - `schemas/vault.schema.json`
@@ -700,7 +656,7 @@ afi-factory is **not involved** in vault design or implementation. This is expec
 **afi-factory** (1 file):
 - `.afi-codex.json`
 
-**Total: 34 files examined**
+**Total: 31 files examined**
 
 ---
 
