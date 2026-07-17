@@ -49,7 +49,7 @@ import * as readline from "readline";
  * - DISCORD_APPLICATION_ID: Discord application ID (if using Discord client)
  * - DISCORD_API_TOKEN: Discord bot token (if using Discord client)
  * - AFI_REACTOR_URL: URL for AFI Reactor API (future, for AFI telemetry plugin)
- * - AFI_CORE_URL: URL for AFI Core API (future, for AFI skills plugin)
+ * - AFI_CORE_URL: URL for AFI Core API (future)
  */
 async function main() {
   try {
@@ -84,7 +84,6 @@ async function main() {
 
     // TODO: Register additional plugins when available:
     // - @elizaos/plugin-node (Node.js services: browser, PDF, speech, etc.)
-    // - @afi/plugin-afi-skills (skill invocation via AFI APIs)
 
     elizaLogger.success("✅ AgentRuntime framework initialized successfully");
     elizaLogger.info("🤖 Framework ready for custom characters");

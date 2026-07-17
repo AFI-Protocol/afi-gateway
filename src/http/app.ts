@@ -8,11 +8,6 @@ import {
   projectSubmission,
 } from "../services/reactorSubmitter.js";
 import { apiKeyAuthMiddleware, createRateLimiter, type AuthedRequest } from "../middleware/apiKeyAuth.js";
-import {
-  listSkills,
-  getSkillById,
-  summarizeCapabilities,
-} from "../services/skillsService.js";
 
 export interface AppDeps {
   apiKeyStore?: ApiKeyStore;
@@ -140,46 +135,6 @@ export function buildApp(deps: AppDeps = {}) {
 
     const projected = projectSubmission(submission, tenantId);
     return res.status(projected.status).json(projected.body);
-  });
-
-  // Skills discovery (public)
-  app.get("/api/v1/skills", async (req: Request, res: Response) => {
-    try {
-      const { q, domain, tag } = req.query;
-      const skills = await listSkills(
-        {
-          q: typeof q === "string" ? q : undefined,
-          domain: typeof domain === "string" ? domain : undefined,
-          tag: typeof tag === "string" ? tag : undefined,
-        },
-        process.env.AFI_SKILLS_MANIFEST_PATH
-      );
-      return res.status(200).json({ items: skills });
-    } catch (err) {
-      elizaLogger.error("[skills:list] error", err);
-      return res.status(500).json({ error: "skills_list_failed" });
-    }
-  });
-
-  app.get("/api/v1/skills/:id", async (req: Request, res: Response) => {
-    try {
-      const skill = await getSkillById(req.params.id, process.env.AFI_SKILLS_MANIFEST_PATH);
-      if (!skill) return res.status(404).json({ error: "not_found" });
-      return res.status(200).json(skill);
-    } catch (err) {
-      elizaLogger.error("[skills:get] error", err);
-      return res.status(500).json({ error: "skills_get_failed" });
-    }
-  });
-
-  app.get("/api/v1/skills/capabilities", async (_req: Request, res: Response) => {
-    try {
-      const summary = await summarizeCapabilities(process.env.AFI_SKILLS_MANIFEST_PATH);
-      return res.status(200).json(summary);
-    } catch (err) {
-      elizaLogger.error("[skills:capabilities] error", err);
-      return res.status(500).json({ error: "skills_capabilities_failed" });
-    }
   });
 
   // 404
