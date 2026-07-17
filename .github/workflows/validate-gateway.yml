@@ -16,9 +16,10 @@ jobs:
     env:
       # afi-reactor is a CI FIXTURE for the cross-repository boundary proof, not
       # a dependency of the gateway. Pinned to the reviewed merged commit that
-      # completed Slot 3 (MONGO-REACTOR-SUBMIT + the UWR stamp follow-up) so the
-      # proof is reproducible; bump deliberately, never automatically.
-      REACTOR_REF: 5275ffab05f3787ce6305b575955d6d0c290d811
+      # completed SLOT-FCP-CLEANUP (analyst-configurable pipelines v1: the
+      # manifest-driven executor is live and the afi-factory dependency is cut)
+      # so the proof is reproducible; bump deliberately, never automatically.
+      REACTOR_REF: d1e5a1f45eecd0a71457ce18ead76f9a3378b9e6
 
     steps:
       - name: Checkout afi-gateway
@@ -49,12 +50,6 @@ jobs:
         with:
           repository: AFI-Protocol/afi-core
           path: afi-core
-
-      - name: Checkout afi-factory (afi-reactor dependency)
-        uses: actions/checkout@v4
-        with:
-          repository: AFI-Protocol/afi-factory
-          path: afi-factory
 
       - name: Checkout afi-math (afi-reactor dependency)
         uses: actions/checkout@v4
