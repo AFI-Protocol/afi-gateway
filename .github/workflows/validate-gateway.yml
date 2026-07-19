@@ -16,10 +16,10 @@ jobs:
     env:
       # afi-reactor is a CI FIXTURE for the cross-repository boundary proof, not
       # a dependency of the gateway. Pinned to the reviewed merged commit that
-      # completed SLOT-FCP-CLEANUP (analyst-configurable pipelines v1: the
-      # manifest-driven executor is live and the afi-factory dependency is cut)
-      # so the proof is reproducible; bump deliberately, never automatically.
-      REACTOR_REF: 2a06c82def6a600bef8f16154973457a59c8bd86
+      # completed EV3-GOV (Evidence V3: provider invocation capture, the
+      # District Two V3 builder, and the all-five fail-fast law) so the proof
+      # is reproducible; bump deliberately, never automatically.
+      REACTOR_REF: 0e23f7cfb5b7156971d1d6cf41078b8f48b1b558
 
     steps:
       - name: Checkout afi-gateway
