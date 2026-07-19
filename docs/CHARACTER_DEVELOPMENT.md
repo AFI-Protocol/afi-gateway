@@ -725,7 +725,7 @@ export const yourCharacter: Character = {
 
 ### AFI Services
 
-- [afi-reactor](../../afi-reactor/) - DAG orchestration
+- [afi-reactor](../../afi-reactor/) - pipeline runtime
 - [afi-core](../../afi-core/) - Validation and scoring
 - [afi-config](../../afi-config/) - Governance and schemas
 

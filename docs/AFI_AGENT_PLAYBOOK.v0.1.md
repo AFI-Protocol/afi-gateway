@@ -76,7 +76,7 @@ The **AFI-owned integration layer** that:
 ### AFI Services
 
 Backend services that expose HTTP/WS APIs for agents to call, including:
-- **`afi-reactor`**: DAG orchestration, signal scoring, replay, and introspection endpoints.
+- **`afi-reactor`**: manifest-driven pipeline runtime, signal scoring, and scored-signal endpoints.
 - **`afi-core`**: Shared types, validators, and client libraries.
 - **Future services**: Analytics, governance, mentor/validator tooling.
 

@@ -69,7 +69,7 @@ async function getAfiReactorStatusSummary(runtime: IAgentRuntime): Promise<strin
   const result: HealthCheckResponse = await checkAfiReactorHealth();
 
   if (result.status === "ok") {
-    return `✅ **AFI Reactor is online**\n\nService: ${result.service}\nFroggy Pipeline: ${result.froggyPipeline}`;
+    return `✅ **AFI Reactor is online**\n\nService: ${result.service}\nComposition: ${result.composition}`;
   } else {
     return `⚠️ **AFI Reactor status**: ${result.status}`;
   }
