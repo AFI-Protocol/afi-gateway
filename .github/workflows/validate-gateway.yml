@@ -19,7 +19,7 @@ jobs:
       # completed SLOT-FCP-CLEANUP (analyst-configurable pipelines v1: the
       # manifest-driven executor is live and the afi-factory dependency is cut)
       # so the proof is reproducible; bump deliberately, never automatically.
-      REACTOR_REF: d1e5a1f45eecd0a71457ce18ead76f9a3378b9e6
+      REACTOR_REF: 2a06c82def6a600bef8f16154973457a59c8bd86
 
     steps:
       - name: Checkout afi-gateway

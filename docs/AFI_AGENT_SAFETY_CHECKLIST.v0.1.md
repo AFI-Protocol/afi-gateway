@@ -19,7 +19,7 @@ This checklist is a condensed, human-readable summary derived from the full **AF
 
 **Respect AFI's architecture**:
 - The gateway is a client of AFI services, not part of AFI core.
-- Never reimplement AFI business logic (scoring, validation, DAG orchestration) inside the agent or gateway.
+- Never reimplement AFI business logic (scoring, validation, pipeline orchestration) inside the agent or gateway.
 - Treat AFI as an external, authoritative service.
 
 ---

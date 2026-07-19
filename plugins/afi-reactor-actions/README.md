@@ -194,4 +194,4 @@ In production, this would require:
 
 - [AFI Reactor HTTP Webhook Server](../../afi-reactor/docs/HTTP_WEBHOOK_SERVER.md)
 - [AFI Client](../../src/afiClient.ts)
-- [Canonical Froggy Pipeline Config](../../../afi-reactor/src/config/froggyPipeline.ts)
+- [Canonical pipeline manifest + provider registries (afi-config)](../../../afi-config/registries/pipelines/)

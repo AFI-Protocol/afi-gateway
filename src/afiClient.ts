@@ -84,6 +84,10 @@ export interface ReactorScoredSignalV1 {
  */
 export interface HealthCheckResponse {
   status: "ok" | "error";
+  /** Service identifier reported by the reactor /health endpoint. */
+  service?: string;
+  /** Runtime composition readiness reported by the reactor /health endpoint. */
+  composition?: string;
   message?: string;
   timestamp?: string;
   [key: string]: any;

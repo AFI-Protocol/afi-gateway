@@ -56,7 +56,7 @@ package name and no hardcoded Institute tenant identity.
 ## What This Repo Does NOT Contain
 
 - **AFI core business logic** — Signal scoring, validation, and tokenomics live in afi-reactor and afi-core
-- **AFI orchestration** — DAG orchestration lives in afi-reactor
+- **AFI orchestration** — the manifest-driven pipeline runtime lives in afi-reactor
 - **Direct database access** — All AFI data access happens via AFI APIs
 
 ---
@@ -75,9 +75,9 @@ package name and no hardcoded Institute tenant identity.
                 ▼
 ┌─────────────────────────────────────┐
 │  AFI Services                       │
-│  - afi-reactor (DAG orchestration)  │
+│  - afi-reactor (pipeline runtime)   │
 │  - afi-core (validators, scoring)   │
-│  - Codex (signal replay)            │
+│  - afi-infra (evidence store)       │
 └─────────────────────────────────────┘
 ```
 
