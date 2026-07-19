@@ -55,6 +55,9 @@ const EVIDENCE_COLLECTION = "scored_signal_evidence";
 const EVIDENCE_SCHEMA = "afi.scored-signal-evidence.v3";
 const SHARED_SECRET = "boundary-it-shared-secret";
 
+let tinyBrainsUrl = process.env.TINY_BRAINS_URL ?? "";
+let tinyBrainsStub = null;
+
 const GOOD_PORT = 18080;
 const BAD_UWR_PORT = 18081;
 const DEAD_PORT = 1; // nothing listens here: a genuine ECONNREFUSED
@@ -76,7 +79,14 @@ function spawnReactor(port, extraEnv) {
       PORT: String(port),
       AFI_EVIDENCE_MONGODB_URI: URI,
       AFI_EVIDENCE_DB_NAME: EVIDENCE_DB,
-      AFI_PRICE_FEED_SOURCE: "demo", // hermetic: never depend on a live feed
+      // A REAL keyless feed: the production-mode child refuses the test-only
+      // synthetic-feed seam (by design), and every lane is critical under
+      // EV3-GOV D-EV3-5(1). Operator override respected.
+      AFI_PRICE_FEED_SOURCE: process.env.AFI_PRICE_FEED_SOURCE ?? "coinbase",
+      // All five lanes are critical under EV3-GOV D-EV3-5(1); the aiMl lane
+      // gets the Reactor's own self-verifying Tiny Brains stub (started in
+      // main()) unless the operator provides a real TINY_BRAINS_URL.
+      TINY_BRAINS_URL: tinyBrainsUrl,
       WEBHOOK_SHARED_SECRET: SHARED_SECRET,
       ...extraEnv,
     },
@@ -109,6 +119,19 @@ function evidenceCollection(client) {
 }
 
 async function main() {
+  // All five lanes are critical under EV3-GOV D-EV3-5(1): the aiMl lane needs
+  // a Tiny Brains endpoint. Default to the Reactor's own self-verifying stub
+  // (from the checked-out afi-reactor under proof); an operator-provided
+  // TINY_BRAINS_URL (a real service) takes precedence.
+  if (!tinyBrainsUrl) {
+    const stubModule = pathToFileURL(
+      path.resolve(REACTOR_DIR, "test/integration-mongo/support/tinyBrainsStub.mjs")
+    ).href;
+    const { startTinyBrainsStub } = await import(stubModule);
+    tinyBrainsStub = await startTinyBrainsStub();
+    tinyBrainsUrl = tinyBrainsStub.url;
+  }
+
   const client = new MongoClient(URI);
   await client.connect();
 
@@ -137,7 +160,7 @@ async function main() {
   const signalId = "gw-boundary-it-1";
   const payload = {
     signalId,
-    symbol: "BTCUSDT",
+    symbol: "BTC/USDT", // canonical BASE/QUOTE — required by the real keyless feed
     timeframe: "15m",
     strategy: "trend_pullback_v1",
     direction: "long",
@@ -181,13 +204,13 @@ async function main() {
   }
   assert.equal(record.provenanceRecord.schema, "afi.provenance-record.v1");
   assert.ok(record.provenanceRecord.inputHash, "reactor-computed canonical input hash");
-  // The v2 composition reference is decisive too: the gateway has no pipeline
+  // The composition reference is decisive too: the gateway has no pipeline
   // manifest, no canonical hasher, and no registry — a composition reference
   // can only have been constructed by the reactor's configured executor.
-  assert.equal(record.composition.schema, "afi.composition-ref.v1", "v2 composition reference present");
+  assert.equal(record.composition.schema, "afi.composition-ref.v1", "composition reference present");
   assert.equal(record.composition.pipelineId, "froggy-trend-pullback", "resolved pipeline identity");
   assert.ok(record.composition.manifestHash, "canonical manifest hash the gateway never computed");
-  ok("P2 evidence constructed by the reactor (UWR stamp + scores + axes + hashes + v2 composition ref the gateway never had)");
+  ok("P2 evidence constructed by the reactor (UWR stamp + scores + axes + hashes + composition ref the gateway never had)");
 
   // ---- P3: provenance is authenticated by the gateway, not fabricated ----
   assert.equal(
@@ -334,6 +357,10 @@ async function main() {
 function cleanup() {
   for (const child of children) {
     if (!child.killed) child.kill("SIGKILL");
+  }
+  if (tinyBrainsStub) {
+    void tinyBrainsStub.close().catch(() => {});
+    tinyBrainsStub = null;
   }
 }
 

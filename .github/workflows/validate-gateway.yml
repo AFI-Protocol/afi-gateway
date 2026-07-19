@@ -19,7 +19,7 @@ jobs:
       # completed SLOT-FCP-CLEANUP (analyst-configurable pipelines v1: the
       # manifest-driven executor is live and the afi-factory dependency is cut)
       # so the proof is reproducible; bump deliberately, never automatically.
-      REACTOR_REF: 2a06c82def6a600bef8f16154973457a59c8bd86
+      REACTOR_REF: 42b6f29d55c9ac55bce0c0338344c6ee2868271c
 
     steps:
       - name: Checkout afi-gateway
@@ -52,6 +52,9 @@ jobs:
         with:
           repository: AFI-Protocol/afi-config
           path: afi-config
+          # Interim pin: the EV3-GOV afi-config head REACTOR_REF is built
+          # against; restored to the default branch once afi-config merges.
+          ref: e5f17161f957c00913b8763919380e92b0b95c39
 
       - name: Setup Node.js 22.x
         uses: actions/setup-node@v4
