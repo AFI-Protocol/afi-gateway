@@ -52,7 +52,7 @@ if (!REACTOR_DIR) {
 const EVIDENCE_DB = process.env.AFI_EVIDENCE_DB_NAME ?? "afi_gateway_boundary_it";
 const OPERATIONAL_DB = process.env.AFI_MONGO_DB_NAME ?? "afi_eliza_it";
 const EVIDENCE_COLLECTION = "scored_signal_evidence";
-const EVIDENCE_SCHEMA = "afi.scored-signal-evidence.v2";
+const EVIDENCE_SCHEMA = "afi.scored-signal-evidence.v3";
 const SHARED_SECRET = "boundary-it-shared-secret";
 
 const GOOD_PORT = 18080;
