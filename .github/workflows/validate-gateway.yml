@@ -16,10 +16,10 @@ jobs:
     env:
       # afi-reactor is a CI FIXTURE for the cross-repository boundary proof, not
       # a dependency of the gateway. Pinned to the reviewed merged commit that
-      # completed SLOT-FCP-CLEANUP (analyst-configurable pipelines v1: the
-      # manifest-driven executor is live and the afi-factory dependency is cut)
-      # so the proof is reproducible; bump deliberately, never automatically.
-      REACTOR_REF: bd6849e0399f6d46d8ef32b38a2cf549b3143343
+      # completed EV3-GOV (Evidence V3: provider invocation capture, the
+      # District Two V3 builder, and the all-five fail-fast law) so the proof
+      # is reproducible; bump deliberately, never automatically.
+      REACTOR_REF: 0e23f7cfb5b7156971d1d6cf41078b8f48b1b558
 
     steps:
       - name: Checkout afi-gateway
@@ -52,9 +52,6 @@ jobs:
         with:
           repository: AFI-Protocol/afi-config
           path: afi-config
-          # Interim pin: the EV3-GOV afi-config head REACTOR_REF is built
-          # against; restored to the default branch once afi-config merges.
-          ref: e5f17161f957c00913b8763919380e92b0b95c39
 
       - name: Setup Node.js 22.x
         uses: actions/setup-node@v4
