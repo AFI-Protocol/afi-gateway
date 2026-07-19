@@ -91,7 +91,7 @@ package name and no hardcoded Institute tenant identity.
 
 `afi-gateway` runs on **ElizaOS** (`@elizaos/core`). Its upstream dependency tree resolves additional third-party packages into `package-lock.json` that AFI does not import, configure, or build on. Those are upstream vendor metadata, not part of AFI's architecture.
 
-AFI's orchestration is the deterministic DAG pipeline in **`afi-reactor`**; signal scoring, validation, and minting source of truth remain **`afi-reactor`**, **`afi-core`**, and **`afi-config`** — not this gateway.
+AFI's orchestration is the manifest-driven pipeline runtime in **`afi-reactor`**; signal scoring, validation, and minting source of truth remain **`afi-reactor`**, **`afi-core`**, and **`afi-config`** — not this gateway.
 
 See [`afi-docs/ARCHITECTURE_STATUS.md`](https://github.com/AFI-Protocol/afi-docs/blob/main/ARCHITECTURE_STATUS.md) for the architecture summary.
 
