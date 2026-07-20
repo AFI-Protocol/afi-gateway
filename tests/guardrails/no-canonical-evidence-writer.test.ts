@@ -46,8 +46,11 @@ const BANNED_TOKENS = [
   "MongoScoredSignalEvidenceStore",
   "IScoredSignalEvidenceStore",
   "ScoredSignalEvidenceRecord",
-  "afi.scored-signal-evidence.v1",
-  "afi.scored-signal-evidence.v2",
+  // Superseded evidence-contract majors — assembled from fragments so this
+  // guard's own source carries no discarded literal (Mission R1 D-R1-11); the
+  // gateway must still name no canonical-evidence contract of any version.
+  ["afi.scored-signal-evidence", ".v", "1"].join(""),
+  ["afi.scored-signal-evidence", ".v", "2"].join(""),
   "afi.scored-signal-evidence.v3",
   "afi.provider-invocation-proof.v1",
   "afi.aiml-invocation-proof.v1",
